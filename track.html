@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#0f0f11"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="75 Hard"/>
+<link rel="manifest" href="manifest.json"/>
+<!-- Apple touch icons (generate these from your icon) -->
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<title>75 Hard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0f11;--bg2:#1a1a1f;--bg3:#242429;--bg4:#2e2e35;
+  --txt:#f0f0f5;--txt2:#a0a0b0;--txt3:#606070;
+  --accent:#7c6cfc;--accent2:#a598fd;--accentbg:rgba(124,108,252,0.15);
+  --green:#4ade80;--greenbg:rgba(74,222,128,0.12);
+  --red:#f87171;--redbg:rgba(248,113,113,0.12);
+  --amber:#fbbf24;--amberbg:rgba(251,191,36,0.12);
+  --blue:#60a5fa;--bluebg:rgba(96,165,250,0.12);
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --r:14px;--r2:10px;--r3:20px;
+}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
+#nav{display:flex;background:rgba(15,15,17,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border:none;background:none;color:var(--txt3);cursor:pointer;transition:color .2s;font-size:10px;font-weight:500;letter-spacing:0.3px}
+.nav-btn.active{color:var(--accent)}
+.nav-btn i{font-size:22px}
+#pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;transition:opacity .25s,transform .25s;opacity:0;pointer-events:none;transform:translateY(8px)}
+.page.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.page-inner{padding:20px 16px 24px;min-height:100%}
+h1{font-size:28px;font-weight:700;letter-spacing:-0.5px}
+h2{font-size:20px;font-weight:600;letter-spacing:-0.3px}
+h3{font-size:15px;font-weight:600}
+.muted{color:var(--txt2)}
+.smuted{color:var(--txt3);font-size:12px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.card.glow{border-color:rgba(124,108,252,0.3);box-shadow:0 0 24px rgba(124,108,252,0.08)}
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 0}
+.ring-track{fill:none;stroke:var(--bg3);stroke-width:10}
+.ring-fill{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+.ring-label{text-anchor:middle;dominant-baseline:central;font-size:28px;font-weight:700;fill:var(--txt)}
+.ring-sub{text-anchor:middle;dominant-baseline:central;font-size:13px;fill:var(--txt2)}
+.task-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s;user-select:none}
+.task-card.done{border-color:rgba(74,222,128,0.25);background:rgba(74,222,128,0.04)}
+.task-card:active{transform:scale(0.98)}
+.task-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.task-icon i{font-size:22px}
+.task-body{flex:1;min-width:0}
+.task-name{font-size:14px;font-weight:600;margin-bottom:2px}
+.task-desc{font-size:12px;color:var(--txt3)}
+.task-time{font-size:11px;color:var(--green);margin-top:2px}
+.task-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s}
+.task-card.done .task-check{background:var(--green);border-color:var(--green)}
+.task-card.done .task-check i{color:var(--bg);font-size:14px}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px;text-align:center}
+.stat-num{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:11px;color:var(--txt3);letter-spacing:0.4px;text-transform:uppercase}
+.quote-card{background:var(--accentbg);border:1px solid rgba(124,108,252,0.2);border-radius:var(--r);padding:18px;margin-bottom:16px}
+.quote-text{font-size:15px;font-style:italic;line-height:1.6;color:var(--accent2);margin-bottom:8px}
+.quote-author{font-size:12px;color:var(--txt3)}
+.water-visual{height:120px;background:var(--bg3);border-radius:var(--r2);overflow:hidden;position:relative;margin:12px 0}
+.water-fill{position:absolute;bottom:0;left:0;right:0;background:#1d6aff;transition:height .5s cubic-bezier(.4,0,.2,1);opacity:0.6}
+.water-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:white}
+.quick-btns{display:flex;gap:8px;flex-wrap:wrap}
+.qbtn{flex:1;min-width:60px;padding:10px 8px;border:1px solid var(--border2);background:var(--bg3);color:var(--txt);border-radius:var(--r2);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+.qbtn:active{transform:scale(0.95);background:var(--accentbg)}
+.pbar-wrap{background:var(--bg3);border-radius:99px;height:8px;overflow:hidden;margin:8px 0}
+.pbar-fill{height:100%;border-radius:99px;transition:width .4s ease;background:var(--accent)}
+.pbar-fill.green{background:var(--green)}
+.pbar-fill.blue{background:var(--blue)}
+.journal-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);color:var(--txt);font-size:14px;padding:12px;resize:none;font-family:inherit;line-height:1.5}
+.journal-textarea:focus{outline:none;border-color:var(--accent)}
+.mood-row{display:flex;gap:6px;flex-wrap:wrap}
+.mood-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--border);background:var(--bg3);color:var(--txt2);border-radius:99px;font-size:12px;cursor:pointer;transition:all .15s}
+.mood-btn i{font-size:16px}
+.mood-btn.active{border-color:var(--accent);background:var(--accentbg);color:var(--accent2)}
+.chart-bar-wrap{display:flex;align-items:flex-end;gap:4px;height:80px;margin:12px 0}
+.cbar{flex:1;background:var(--accent);border-radius:4px 4px 0 0;min-width:0;opacity:0.7;transition:height .4s;cursor:pointer}
+.cbar:hover{opacity:1}
+.cbar.today{opacity:1}
+.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.badge{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 10px;text-align:center;transition:all .2s}
+.badge.unlocked{border-color:rgba(251,191,36,0.3);background:var(--amberbg)}
+.badge-icon{font-size:26px;margin-bottom:6px;display:flex;justify-content:center}
+.badge-icon i{font-size:28px}
+.badge.unlocked .badge-icon i{color:var(--amber)}
+.badge:not(.unlocked) .badge-icon i{color:var(--txt3);opacity:0.35}
+.badge-name{font-size:11px;font-weight:600;color:var(--txt2)}
+.badge-day{font-size:10px;color:var(--txt3);margin-top:2px}
+.fail-card{background:var(--redbg);border:1px solid rgba(248,113,113,0.25);border-radius:var(--r);padding:18px;margin-bottom:12px}
+.consequence-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.consequence-item:last-child{border-bottom:none}
+.consequence-item i{font-size:20px;color:var(--red);flex-shrink:0}
+.section-head{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);margin:20px 0 10px;display:flex;align-items:center;gap:6px}
+.section-head i{font-size:14px}
+.section-head:first-child{margin-top:0}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border-radius:24px 24px 0 0;padding:20px;width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:85dvh;overflow-y:auto}
+.overlay.open .modal{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:var(--bg4);border-radius:99px;margin:0 auto 18px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--r2);font-size:15px;font-weight:600;cursor:pointer;border:none;width:100%;transition:all .15s}
+.btn i{font-size:18px}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--accent);color:white}
+.btn-danger{background:var(--redbg);border:1px solid rgba(248,113,113,0.3);color:var(--red)}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--txt)}
+.input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);color:var(--txt);font-size:15px;padding:12px 14px;width:100%;font-family:inherit}
+.input:focus{outline:none;border-color:var(--accent)}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.pop{animation:pop .3s ease}
+.photo-zone{border:2px dashed var(--border2);border-radius:var(--r);height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--txt3);transition:all .2s}
+.photo-zone i{font-size:36px}
+.photo-zone:hover{border-color:var(--accent);color:var(--accent2);background:var(--accentbg)}
+.photo-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-top:8px}
+.photo-thumb{width:80px;height:80px;border-radius:var(--r2);object-fit:cover;flex-shrink:0;border:2px solid var(--border)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:0.3px}
+.chip i{font-size:13px}
+.chip.green{background:var(--greenbg);color:var(--green)}
+.chip.amber{background:var(--amberbg);color:var(--amber)}
+.chip.red{background:var(--redbg);color:var(--red)}
+.chip.blue{background:var(--bluebg);color:var(--blue)}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="pages">
+    <div class="page active" id="p-home"><div class="page-inner" id="home-content"></div></div>
+    <div class="page" id="p-tasks"><div class="page-inner" id="tasks-content"></div></div>
+    <div class="page" id="p-log"><div class="page-inner" id="log-content"></div></div>
+    <div class="page" id="p-stats"><div class="page-inner" id="stats-content"></div></div>
+    <div class="page" id="p-settings"><div class="page-inner" id="settings-content"></div></div>
+  </div>
+  <nav id="nav">
+    <button class="nav-btn active" data-page="home" onclick="nav('home')">
+      <i class="ti ti-home"></i>Today
+    </button>
+    <button class="nav-btn" data-page="tasks" onclick="nav('tasks')">
+      <i class="ti ti-checklist"></i>Tasks
+    </button>
+    <button class="nav-btn" data-page="log" onclick="nav('log')">
+      <i class="ti ti-notebook"></i>Journal
+    </button>
+    <button class="nav-btn" data-page="stats" onclick="nav('stats')">
+      <i class="ti ti-chart-bar"></i>Stats
+    </button>
+    <button class="nav-btn" data-page="settings" onclick="nav('settings')">
+      <i class="ti ti-settings"></i>Settings
+    </button>
+  </nav>
+</div>
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+<input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(event)"/>
+
+<script>
+const STORAGE_KEY='75hard_v2';
+const TASKS_DEF=[
+  {id:'w1',icon:'ti-barbell',name:'Workout 1',desc:'45 min — tap the sun to mark as outdoor',color:'#7c6cfc',hasOutdoor:true},
+  {id:'w2',icon:'ti-bike',name:'Workout 2',desc:'45 min — must differ from workout 1',color:'#a598fd',hasOutdoor:true},
+  {id:'water',icon:'ti-droplet',name:'Drink 1 Gallon',desc:'~3.8 litres of water',color:'#38bdf8'},
+  {id:'read',icon:'ti-book',name:'Read 10 Pages',desc:'Non-fiction only',color:'#4ade80'},
+  {id:'photo',icon:'ti-camera',name:'Progress Photo',desc:'Front, side, or back',color:'#fbbf24'},
+  {id:'diet',icon:'ti-salad',name:'Follow Diet',desc:'No cheat meals, no alcohol',color:'#f472b6'},
+];
+const QUOTES=[
+  {text:"The only easy day was yesterday.",author:"Navy SEALs"},
+  {text:"Discipline equals freedom.",author:"Jocko Willink"},
+  {text:"Hard times create strong men.",author:"G. Michael Hopf"},
+  {text:"Don't stop when you're tired. Stop when you're done.",author:"David Goggins"},
+  {text:"The pain you feel today will be the strength you feel tomorrow.",author:"Arnold Schwarzenegger"},
+  {text:"You don't have to be great to start, but you have to start to be great.",author:"Zig Ziglar"},
+  {text:"Suffer the pain of discipline or suffer the pain of regret.",author:"Jim Rohn"},
+];
+
+function defaultState(){
+  return {
+    startDate:null,days:{},
+    consequences:[
+      {id:'c1',text:'₹500 donation to a cause you dislike',icon:'ti-coin'},
+      {id:'c2',text:'Extra 45 min outdoor run next day',icon:'ti-run'},
+      {id:'c3',text:'No screen time after 8 PM for a week',icon:'ti-device-mobile-off'},
+    ],
+    settings:{name:'Warrior',notifWater:true,notifPhoto:true,notifEvening:true},
+  };
+}
+
+let S=(()=>{ try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||defaultState();}catch{return defaultState();} })();
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(S));}catch{}}
+function today(){return new Date().toISOString().slice(0,10);}
+function dayNum(){
+  if(!S.startDate)return 0;
+  const d=Math.floor((new Date(today())-new Date(S.startDate))/86400000)+1;
+  return Math.min(Math.max(d,1),75);
+}
+function dayData(key){if(!S.days[key])S.days[key]={tasks:{},water:0,pages:0,journal:'',wins:'',struggles:'',mood:0,energy:0,photos:[]};return S.days[key];}
+function todayData(){return dayData(today());}
+function outdoorDone(dd){return !!(dd.outdoor_w1||dd.outdoor_w2);}
+function completedCount(dd){
+  let n=TASKS_DEF.filter(t=>dd.tasks[t.id]).length;
+  if(!outdoorDone(dd)) n=Math.max(n-1,0);
+  return n;
+}
+function allDone(dd){return TASKS_DEF.every(t=>dd.tasks[t.id])&&outdoorDone(dd);}
+function pct(dd){return Math.round(completedCount(dd)/TASKS_DEF.length*100);}
+function streak(){
+  let s=0,d=new Date(today());
+  while(true){const k=d.toISOString().slice(0,10);const dd=S.days[k];if(!dd||!allDone(dd))break;s++;d.setDate(d.getDate()-1);}
+  return s;
+}
+
+let curPage='home';
+function nav(pg){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===pg));
+  document.getElementById('p-'+pg).classList.add('active');
+  curPage=pg;render[pg]();
+}
+function openModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('overlay').classList.add('open');}
+function closeModal(e){if(e.target===document.getElementById('overlay'))document.getElementById('overlay').classList.remove('open');}
+function forceClose(){document.getElementById('overlay').classList.remove('open');}
+
+const render={};
+
+render.home=function(){
+  const dd=todayData(),done=completedCount(dd),total=TASKS_DEF.length,prog=done/total;
+  const R=54,C=2*Math.PI*R,dash=C*(1-prog),dn=dayNum(),q=QUOTES[(dn||1)%QUOTES.length],str=streak();
+  if(!S.startDate){
+    document.getElementById('home-content').innerHTML=`
+      <div style="text-align:center;padding:60px 20px 40px">
+        <i class="ti ti-bolt" style="font-size:64px;color:var(--accent);display:block;margin-bottom:16px"></i>
+        <h1 style="font-size:32px;margin-bottom:8px">75 Hard</h1>
+        <p class="muted" style="margin-bottom:32px;font-size:15px;line-height:1.6">The hardest mental toughness program ever devised.<br>No substitutions. No modifications. No excuses.</p>
+        <div class="card" style="margin-bottom:24px;text-align:left">
+          <div class="section-head"><i class="ti ti-user"></i>Your Name</div>
+          <input class="input" id="uname" placeholder="Enter your name" value="${S.settings.name||''}"/>
+          <div class="section-head" style="margin-top:16px"><i class="ti ti-calendar"></i>Start Date</div>
+          <input class="input" id="sdate" type="date" value="${today()}" style="margin-top:4px"/>
+        </div>
+        <button class="btn btn-primary" onclick="startChallenge()"><i class="ti ti-rocket"></i>Begin 75 Hard</button>
+        <p style="font-size:12px;color:var(--txt3);margin-top:16px;line-height:1.5">Once you start, missing any task means restarting from Day 1.<br>No exceptions. That's the point.</p>
+      </div>`;
+    return;
+  }
+  const remaining=TASKS_DEF.filter(t=>!dd.tasks[t.id]);
+  let remHtml=remaining.slice(0,3).map(t=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
+      <i class="ti ${t.icon}" style="font-size:18px;color:var(--txt3);width:20px;text-align:center"></i>
+      <span style="font-size:13px;color:var(--txt2)">${t.name}</span>
+    </div>`).join('');
+  if(remaining.length>3)remHtml+=`<div style="font-size:12px;color:var(--txt3);padding:8px 0">+${remaining.length-3} more tasks</div>`;
+  document.getElementById('home-content').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <div><h1 style="font-size:24px">Day ${dn}</h1><p class="smuted">${75-dn} days remaining</p></div>
+      <span class="chip ${str>0?'green':'amber'}">${str>0?`<i class="ti ti-flame"></i>${str} day streak`:'<i class="ti ti-flame"></i>Start streak'}</span>
+    </div>
+    <div class="ring-wrap">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle class="ring-track" cx="65" cy="65" r="${R}" transform="rotate(-90 65 65)"/>
+        <circle class="ring-fill" cx="65" cy="65" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="${dash}" transform="rotate(-90 65 65)"/>
+        <text class="ring-label" x="65" y="60">${done}/${total}</text>
+        <text class="ring-sub" x="65" y="82">${prog===1?'COMPLETE':pct(dd)+'% done'}</text>
+      </svg>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num" style="color:var(--accent)">${dn}</div><div class="stat-lbl">Day</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--green)">${Math.round(pct(dd))}%</div><div class="stat-lbl">Today</div></div>
+    </div>
+    <div class="quote-card">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <i class="ti ti-quote" style="font-size:20px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>
+        <div><div class="quote-text">${q.text}</div><div class="quote-author">— ${q.author}</div></div>
+      </div>
+    </div>
+    ${remaining.length===0?`
+    <div class="card glow" style="text-align:center;padding:20px">
+      <i class="ti ti-trophy" style="font-size:40px;color:var(--amber);display:block;margin-bottom:8px"></i>
+      <h3 style="color:var(--green);margin-bottom:4px">Day ${dn} Complete!</h3>
+      <p class="smuted">You crushed it. Rest up for tomorrow.</p>
+    </div>`:`
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <h3>Still to do</h3>
+        <button class="btn btn-outline" style="width:auto;padding:6px 14px;font-size:12px" onclick="nav('tasks')">All Tasks <i class="ti ti-arrow-right" style="font-size:13px"></i></button>
+      </div>
+      ${remHtml}
+    </div>`}
+    <div style="margin-top:12px">
+      <div class="section-head"><i class="ti ti-chart-line"></i>75-Day Progress</div>
+      <div class="pbar-wrap"><div class="pbar-fill" style="width:${(dn/75*100).toFixed(1)}%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-top:4px"><span>Day 1</span><span>Day 75</span></div>
+    </div>`;
+};
+
+render.tasks=function(){
+  const dd=todayData(),dn=dayNum(),done=completedCount(dd);
+  const outdoorOk=outdoorDone(dd);
+  const taskCards=TASKS_DEF.map(t=>{
+    const isDone=!!dd.tasks[t.id],ts=dd.tasks[t.id];
+    const isOutdoor=t.id==='w1'?!!dd.outdoor_w1:t.id==='w2'?!!dd.outdoor_w2:false;
+    const outdoorBtn=t.hasOutdoor?`<button onclick="event.stopPropagation();toggleOutdoor('${t.id}')" title="Mark as outdoor" style="background:${isOutdoor?'rgba(96,165,250,0.18)':'var(--bg3)'};border:1px solid ${isOutdoor?'rgba(96,165,250,0.4)':'var(--border2)'};border-radius:8px;padding:5px 8px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:${isOutdoor?'var(--blue)':'var(--txt3)'};flex-shrink:0;transition:all .2s">
+      <i class="ti ti-sun" style="font-size:14px"></i>${isOutdoor?'Outdoor':'Indoor'}
+    </button>`:'';
+    return `<div class="task-card ${isDone?'done':''}" onclick="toggleTask('${t.id}')" id="task-${t.id}">
+      <div class="task-icon" style="background:${t.color}22"><i class="ti ${t.icon}" style="color:${t.color}"></i></div>
+      <div class="task-body">
+        <div class="task-name" style="${isDone?'text-decoration:line-through;opacity:0.5':''}">${t.name}</div>
+        <div class="task-desc">${t.desc}</div>
+        ${isDone&&ts?`<div class="task-time"><i class="ti ti-clock" style="font-size:11px"></i> Done at ${ts}</div>`:''}
+      </div>
+      ${outdoorBtn}
+      <div class="task-check" style="margin-left:6px">${isDone?`<i class="ti ti-check"></i>`:''}</div>
+    </div>`;
+  }).join('');
+  const outdoorWarning=!outdoorOk?`<div style="display:flex;align-items:center;gap:8px;background:var(--amberbg);border:1px solid rgba(251,191,36,0.25);border-radius:var(--r2);padding:10px 14px;margin-bottom:10px;font-size:13px;color:var(--amber)"><i class="ti ti-sun" style="font-size:16px"></i>Mark one workout as outdoor to satisfy the rule</div>`:'';
+  const wml=dd.water||0,wpct=Math.min(Math.round(wml/3800*100),100),pages=dd.pages||0;
+  document.getElementById('tasks-content').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div><h2>Day ${dn} Tasks</h2><p class="smuted">${done}/${TASKS_DEF.length} completed</p></div>
+      <span class="chip ${done===TASKS_DEF.length&&outdoorOk?'green':'amber'}">${done}/${TASKS_DEF.length}</span>
+    </div>
+    ${outdoorWarning}
+    ${taskCards}
+    <div class="section-head"><i class="ti ti-droplet"></i>Water Intake</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:14px;font-weight:600">${(wml/1000).toFixed(1)}L / 3.8L</span>
+        <span class="chip ${wpct>=100?'green':'blue'}">${wpct}%</span>
+      </div>
+      <div class="water-visual">
+        <div class="water-fill" style="height:${wpct}%"></div>
+        <div class="water-pct">${wpct}%</div>
+      </div>
+      <div class="quick-btns" style="margin-top:10px">
+        ${[200,300,500,750].map(ml=>`<button class="qbtn" onclick="addWater(${ml})">+${ml}ml</button>`).join('')}
+        <button class="qbtn" onclick="resetWater()" style="color:var(--txt3)"><i class="ti ti-refresh" style="font-size:15px"></i></button>
+      </div>
+    </div>
+    <div class="section-head"><i class="ti ti-book"></i>Reading</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:14px;font-weight:600">${pages} / 10 pages</span>
+        <span class="chip ${pages>=10?'green':'amber'}">${pages>=10?'Done':pages+' read'}</span>
+      </div>
+      <div class="pbar-wrap"><div class="pbar-fill green" style="width:${Math.min(pages/10*100,100)}%"></div></div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        ${[1,2,5,10].map(n=>`<button class="qbtn" onclick="addPages(${n})">+${n}</button>`).join('')}
+        <button class="qbtn" onclick="setPages(0)" style="color:var(--txt3)"><i class="ti ti-refresh" style="font-size:15px"></i></button>
+      </div>
+    </div>
+    <div class="section-head"><i class="ti ti-camera"></i>Progress Photo</div>
+    <div class="card">
+      <div class="photo-zone" onclick="document.getElementById('photo-input').click()">
+        <i class="ti ti-camera-plus"></i>
+        <span style="font-size:14px">Tap to take photo</span>
+        <span style="font-size:12px;color:var(--txt3)">Stored locally on device</span>
+      </div>
+      <div class="photo-strip" id="photo-strip">
+        ${(dd.photos||[]).slice(-5).map(src=>`<img class="photo-thumb" src="${src}" onclick="showPhoto('${src}')"/>`).join('')}
+      </div>
+    </div>`;
+};
+
+render.log=function(){
+  const dd=todayData(),dn=dayNum();
+  const moodDefs=[
+    {icon:'ti-mood-sad-2',label:'Terrible'},
+    {icon:'ti-mood-sad',label:'Bad'},
+    {icon:'ti-mood-neutral',label:'Okay'},
+    {icon:'ti-mood-smile',label:'Good'},
+    {icon:'ti-mood-crazy-happy',label:'Amazing'},
+  ];
+  const energyDefs=[
+    {icon:'ti-battery-1',label:'Drained'},
+    {icon:'ti-battery-2',label:'Low'},
+    {icon:'ti-battery-3',label:'Okay'},
+    {icon:'ti-battery-4',label:'High'},
+    {icon:'ti-bolt',label:'Peak'},
+  ];
+  document.getElementById('log-content').innerHTML=`
+    <h2 style="margin-bottom:4px">Day ${dn} Journal</h2>
+    <p class="smuted" style="margin-bottom:16px">${new Date().toLocaleDateString('en-IN',{weekday:'long',month:'long',day:'numeric'})}</p>
+    <div class="section-head"><i class="ti ti-mood-smile"></i>Mood</div>
+    <div class="mood-row" style="margin-bottom:16px">
+      ${moodDefs.map((m,i)=>`<button class="mood-btn ${dd.mood===i+1?'active':''}" onclick="setMood(${i+1})"><i class="ti ${m.icon}"></i>${m.label}</button>`).join('')}
+    </div>
+    <div class="section-head"><i class="ti ti-bolt"></i>Energy Level</div>
+    <div class="mood-row" style="margin-bottom:16px">
+      ${energyDefs.map((e,i)=>`<button class="mood-btn ${dd.energy===i+1?'active':''}" onclick="setEnergy(${i+1})"><i class="ti ${e.icon}"></i>${e.label}</button>`).join('')}
+    </div>
+    <div class="section-head"><i class="ti ti-trophy"></i>Today's Wins</div>
+    <textarea class="journal-textarea" rows="3" id="wins-ta" placeholder="What went well today?" oninput="saveJournal()">${dd.wins||''}</textarea>
+    <div class="section-head" style="margin-top:12px"><i class="ti ti-brain"></i>Struggles &amp; Lessons</div>
+    <textarea class="journal-textarea" rows="3" id="struggles-ta" placeholder="What was hard? What did you learn?" oninput="saveJournal()" style="margin-top:4px">${dd.struggles||''}</textarea>
+    <div class="section-head" style="margin-top:12px"><i class="ti ti-notes"></i>Notes</div>
+    <textarea class="journal-textarea" rows="4" id="journal-ta" placeholder="Anything else on your mind..." oninput="saveJournal()" style="margin-top:4px">${dd.journal||''}</textarea>
+    <button class="btn btn-primary" style="margin-top:16px" onclick="saveJournal();showToast('Journal saved')"><i class="ti ti-device-floppy"></i>Save Journal</button>
+    <div class="section-head" style="margin-top:20px"><i class="ti ti-history"></i>Past Entries</div>
+    ${Object.keys(S.days).filter(k=>S.days[k].journal||S.days[k].wins).sort().reverse().slice(0,5).map(k=>{
+      const d=S.days[k],dn2=S.startDate?Math.floor((new Date(k)-new Date(S.startDate))/86400000)+1:1;
+      return `<div class="card" style="cursor:pointer" onclick="showEntry('${k}')">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:13px;font-weight:600">Day ${dn2}</div><div class="smuted">${k}</div></div>
+          <div style="display:flex;gap:6px">
+            ${d.mood?`<i class="ti ti-mood-smile" style="font-size:16px;color:var(--green)"></i>`:''}
+            ${d.energy?`<i class="ti ti-bolt" style="font-size:16px;color:var(--amber)"></i>`:''}
+          </div>
+        </div>
+        ${d.wins?`<div style="font-size:12px;color:var(--txt2);margin-top:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.wins}</div>`:''}
+      </div>`;
+    }).join('')}`;
+};
+
+render.stats=function(){
+  const dn=dayNum(),str=streak(),keys=Object.keys(S.days).sort();
+  const totalDays=keys.length,perfDays=keys.filter(k=>allDone(S.days[k])).length;
+  const completionRate=totalDays>0?Math.round(perfDays/totalDays*100):0;
+  const bars=[];
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const dd=S.days[k]||{tasks:{},water:0,pages:0};bars.push({k,pct:pct(dd),today:i===0});}
+  const maxPct=Math.max(...bars.map(b=>b.pct),1);
+  const badges=[
+    {day:1,name:'Started',icon:'ti-rocket'},
+    {day:7,name:'1 Week',icon:'ti-star'},
+    {day:14,name:'2 Weeks',icon:'ti-diamond'},
+    {day:21,name:'3 Weeks',icon:'ti-shield'},
+    {day:30,name:'1 Month',icon:'ti-crown'},
+    {day:50,name:'50 Days',icon:'ti-sword'},
+    {day:75,name:'Finished',icon:'ti-trophy'},
+  ];
+  document.getElementById('stats-content').innerHTML=`
+    <h2 style="margin-bottom:16px">Analytics</h2>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num" style="color:var(--accent)">${dn}/75</div><div class="stat-lbl">Challenge Day</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--green)">${str}</div><div class="stat-lbl">Day Streak</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--amber)">${completionRate}%</div><div class="stat-lbl">Completion</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--blue)">${perfDays}</div><div class="stat-lbl">Perfect Days</div></div>
+    </div>
+    <div class="section-head" style="margin-top:8px"><i class="ti ti-calendar-week"></i>Last 7 Days</div>
+    <div class="card">
+      <div class="chart-bar-wrap">
+        ${bars.map(b=>`
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:10px;color:var(--txt3)">${b.pct}%</div>
+            <div class="cbar ${b.today?'today':''}" style="height:${Math.max(b.pct/maxPct*60,2)}px;background:${b.today?'var(--accent)':'var(--bg4)'}"></div>
+            <div style="font-size:10px;color:var(--txt3)">${new Date(b.k).toLocaleDateString('en',{weekday:'short'}).slice(0,1)}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="section-head"><i class="ti ti-list-check"></i>Task Breakdown</div>
+    <div class="card">
+      ${TASKS_DEF.map(t=>{
+        const done=keys.filter(k=>S.days[k]?.tasks[t.id]).length;
+        const pct2=totalDays>0?Math.round(done/totalDays*100):0;
+        return `<div style="margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <i class="ti ${t.icon}" style="font-size:15px;color:${t.color};width:18px"></i>
+            <span style="font-size:13px;flex:1">${t.name}</span>
+            <span style="color:var(--txt3);font-size:12px">${done}/${totalDays}</span>
+          </div>
+          <div class="pbar-wrap" style="margin:0"><div class="pbar-fill" style="width:${pct2}%;background:${t.color}"></div></div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="section-head"><i class="ti ti-award"></i>Milestones</div>
+    <div class="badges-grid">
+      ${badges.map(b=>`
+        <div class="badge ${dn>=b.day?'unlocked':''}">
+          <div class="badge-icon"><i class="ti ${b.icon}"></i></div>
+          <div class="badge-name">${b.name}</div>
+          <div class="badge-day">Day ${b.day}</div>
+        </div>`).join('')}
+    </div>`;
+};
+
+render.settings=function(){
+  const cs=S.consequences;
+  document.getElementById('settings-content').innerHTML=`
+    <h2 style="margin-bottom:16px">Settings</h2>
+    <div class="section-head"><i class="ti ti-user"></i>Profile</div>
+    <div class="card">
+      <div style="margin-bottom:12px"><label class="smuted">Name</label>
+        <input class="input" style="margin-top:6px" value="${S.settings.name||''}" oninput="S.settings.name=this.value;save()"/></div>
+      <div><label class="smuted">Start Date</label>
+        <input class="input" type="date" style="margin-top:6px" value="${S.startDate||''}" oninput="S.startDate=this.value;save()"/></div>
+    </div>
+    <div class="section-head" style="margin-top:4px"><i class="ti ti-alert-triangle" style="color:var(--red)"></i>Failure Consequences</div>
+    <div class="fail-card">
+      <p style="font-size:13px;color:var(--txt2);margin-bottom:12px;line-height:1.5">If you miss a task and restart, you commit to these consequences. The psychological cost drives adherence.</p>
+      ${cs.map((c,i)=>`
+        <div class="consequence-item">
+          <i class="ti ${c.icon}"></i>
+          <span style="flex:1;font-size:13px;color:var(--txt2)">${c.text}</span>
+          <button onclick="editConsequence(${i})" style="background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:4px"><i class="ti ti-edit" style="font-size:16px"></i></button>
+        </div>`).join('')}
+      <button class="btn btn-outline" style="margin-top:12px;font-size:13px" onclick="addConsequence()"><i class="ti ti-plus"></i>Add Consequence</button>
+    </div>
+    <div class="section-head"><i class="ti ti-brand-telegram"></i>Telegram Bot (Coming Soon)</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--txt2);margin-bottom:12px;line-height:1.5">Connect a Telegram bot to receive reminders and log tasks remotely.</p>
+      <div style="margin-bottom:12px"><label class="smuted">Your Tracking Token</label>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <input class="input" style="flex:1;font-family:monospace;font-size:13px" readonly value="${getToken()}" id="token-inp"/>
+          <button class="btn btn-outline" style="width:auto;padding:10px 14px;font-size:12px" onclick="copyToken()"><i class="ti ti-copy"></i></button>
+        </div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r2);padding:12px">
+        <div style="font-size:12px;color:var(--txt3);margin-bottom:6px;font-weight:600;display:flex;align-items:center;gap:6px"><i class="ti ti-bell" style="font-size:14px"></i>Scheduled reminders</div>
+        ${[['07:00','Progress photo reminder','ti-camera'],['12:00','Water check-in','ti-droplet'],['18:00','Outdoor workout check','ti-sun'],['21:00','Finish remaining tasks','ti-checklist']].map(([t,m,ic])=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+            <i class="ti ${ic}" style="font-size:14px;color:var(--txt3);width:16px"></i>
+            <span style="color:var(--accent);min-width:44px">${t}</span>
+            <span style="color:var(--txt2)">${m}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="section-head"><i class="ti ti-alert-circle" style="color:var(--red)"></i>Danger Zone</div>
+    <div class="card">
+      <button class="btn btn-danger" onclick="confirmReset()"><i class="ti ti-refresh"></i>Restart Challenge (Day 1)</button>
+      <button class="btn btn-outline" style="margin-top:8px;color:var(--red);border-color:rgba(248,113,113,0.3)" onclick="confirmWipe()"><i class="ti ti-trash"></i>Erase All Data</button>
+    </div>`;
+};
+
+function startChallenge(){
+  const name=document.getElementById('uname')?.value||'Warrior';
+  const sdate=document.getElementById('sdate')?.value||today();
+  S.settings.name=name;S.startDate=sdate;save();render.home();
+}
+function toggleTask(id){
+  const dd=todayData();
+  if(dd.tasks[id]){delete dd.tasks[id];}
+  else{dd.tasks[id]=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});}
+  save();
+  const el=document.getElementById('task-'+id);
+  if(el){el.classList.add('pop');setTimeout(()=>el.classList.remove('pop'),300);}
+  if(curPage==='tasks')render.tasks();else if(curPage==='home')render.home();
+}
+function toggleOutdoor(id){
+  const dd=todayData();
+  if(id==='w1') dd.outdoor_w1=!dd.outdoor_w1;
+  else if(id==='w2') dd.outdoor_w2=!dd.outdoor_w2;
+  save();render.tasks();if(curPage==='home')render.home();
+}
+function addWater(ml){
+  const dd=todayData();dd.water=Math.min((dd.water||0)+ml,5000);
+  if(dd.water>=3800&&!dd.tasks['water']){dd.tasks['water']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});showToast('Water goal reached');}
+  save();render.tasks();
+}
+function resetWater(){const dd=todayData();dd.water=0;delete dd.tasks['water'];save();render.tasks();}
+function addPages(n){
+  const dd=todayData();dd.pages=Math.min((dd.pages||0)+n,999);
+  if(dd.pages>=10&&!dd.tasks['read']){dd.tasks['read']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});showToast('Reading goal reached');}
+  save();render.tasks();
+}
+function setPages(n){const dd=todayData();dd.pages=n;if(n<10)delete dd.tasks['read'];save();render.tasks();}
+function setMood(n){todayData().mood=n;save();render.log();}
+function setEnergy(n){todayData().energy=n;save();render.log();}
+function saveJournal(){
+  const dd=todayData();
+  const jta=document.getElementById('journal-ta'),wta=document.getElementById('wins-ta'),sta=document.getElementById('struggles-ta');
+  if(jta)dd.journal=jta.value;if(wta)dd.wins=wta.value;if(sta)dd.struggles=sta.value;save();
+}
+function handlePhoto(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const dd=todayData();if(!dd.photos)dd.photos=[];dd.photos.push(ev.target.result);
+    if(!dd.tasks['photo']){dd.tasks['photo']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});showToast('Progress photo saved');}
+    save();if(curPage==='tasks')render.tasks();
+  };
+  reader.readAsDataURL(file);e.target.value='';
+}
+function showPhoto(src){
+  openModal(`<div style="text-align:center">
+    <h3 style="margin-bottom:12px">Progress Photo</h3>
+    <img src="${src}" style="width:100%;border-radius:var(--r);max-height:60dvh;object-fit:contain"/>
+    <button class="btn btn-outline" style="margin-top:12px" onclick="forceClose()">Close</button>
+  </div>`);
+}
+function showEntry(k){
+  const d=S.days[k],dn2=S.startDate?Math.floor((new Date(k)-new Date(S.startDate))/86400000)+1:1;
+  openModal(`
+    <h3>Day ${dn2} — ${k}</h3>
+    <div style="display:flex;gap:8px;margin:10px 0">
+      ${d.mood?`<span class="chip green"><i class="ti ti-mood-smile"></i>Mood ${d.mood}/5</span>`:''}
+      ${d.energy?`<span class="chip blue"><i class="ti ti-bolt"></i>Energy ${d.energy}/5</span>`:''}
+    </div>
+    ${d.wins?`<div class="section-head"><i class="ti ti-trophy"></i>Wins</div><p style="font-size:14px;color:var(--txt2);line-height:1.5">${d.wins}</p>`:''}
+    ${d.struggles?`<div class="section-head" style="margin-top:10px"><i class="ti ti-brain"></i>Struggles</div><p style="font-size:14px;color:var(--txt2);line-height:1.5">${d.struggles}</p>`:''}
+    ${d.journal?`<div class="section-head" style="margin-top:10px"><i class="ti ti-notes"></i>Notes</div><p style="font-size:14px;color:var(--txt2);line-height:1.5">${d.journal}</p>`:''}
+    <button class="btn btn-outline" style="margin-top:16px" onclick="forceClose()">Close</button>`);
+}
+function confirmReset(){
+  openModal(`
+    <div style="text-align:center;padding:10px">
+      <i class="ti ti-mood-sad" style="font-size:56px;color:var(--red);display:block;margin-bottom:12px"></i>
+      <h3 style="margin-bottom:8px;color:var(--red)">Restart Challenge?</h3>
+      <p style="font-size:14px;color:var(--txt2);line-height:1.5;margin-bottom:20px">You're on Day ${dayNum()}. Restarting means you missed a task — the consequences apply.</p>
+      <div class="fail-card" style="margin-bottom:16px;text-align:left">
+        <div style="font-size:12px;font-weight:600;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="ti ti-alert-triangle"></i>Your Consequences</div>
+        ${S.consequences.map(c=>`<div style="display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px">
+          <i class="ti ${c.icon}" style="color:var(--red);font-size:18px"></i><span style="color:var(--txt2)">${c.text}</span>
+        </div>`).join('')}
+      </div>
+      <button class="btn btn-danger" style="margin-bottom:8px" onclick="doReset()"><i class="ti ti-refresh"></i>I Accept — Restart from Day 1</button>
+      <button class="btn btn-outline" onclick="forceClose()"><i class="ti ti-arrow-left"></i>Continue Challenge</button>
+    </div>`);
+}
+function doReset(){S.startDate=today();S.days={};save();forceClose();showToast('Challenge restarted. Honor your consequences.');render.home();}
+function confirmWipe(){
+  openModal(`
+    <div style="text-align:center;padding:10px">
+      <i class="ti ti-trash" style="font-size:56px;color:var(--red);display:block;margin-bottom:12px"></i>
+      <h3 style="color:var(--red);margin-bottom:8px">Erase All Data?</h3>
+      <p class="muted" style="margin-bottom:20px;font-size:14px">This deletes everything permanently.</p>
+      <button class="btn btn-danger" style="margin-bottom:8px" onclick="doWipe()"><i class="ti ti-trash"></i>Yes, Delete Everything</button>
+      <button class="btn btn-outline" onclick="forceClose()">Cancel</button>
+    </div>`);
+}
+function doWipe(){S=defaultState();save();forceClose();render.home();}
+function getToken(){if(!S._token){S._token='75H-'+Math.random().toString(36).slice(2,10).toUpperCase();save();}return S._token;}
+function copyToken(){navigator.clipboard?.writeText(getToken()).then(()=>showToast('Token copied'));}
+function editConsequence(i){
+  const c=S.consequences[i];
+  openModal(`
+    <h3 style="margin-bottom:12px">Edit Consequence</h3>
+    <div style="margin-bottom:10px"><label class="smuted">Tabler icon name (e.g. ti-coin)</label>
+      <input class="input" id="ci" value="${c.icon}" style="margin-top:6px"/></div>
+    <div style="margin-bottom:16px"><label class="smuted">Description</label>
+      <input class="input" id="ct" value="${c.text}" style="margin-top:6px"/></div>
+    <button class="btn btn-primary" onclick="saveConsequence(${i})"><i class="ti ti-device-floppy"></i>Save</button>
+    <button class="btn btn-danger" style="margin-top:8px" onclick="deleteConsequence(${i})"><i class="ti ti-trash"></i>Delete</button>
+    <button class="btn btn-outline" style="margin-top:8px" onclick="forceClose()">Cancel</button>`);
+}
+function saveConsequence(i){S.consequences[i].icon=document.getElementById('ci').value;S.consequences[i].text=document.getElementById('ct').value;save();forceClose();render.settings();}
+function deleteConsequence(i){S.consequences.splice(i,1);save();forceClose();render.settings();}
+function addConsequence(){S.consequences.push({id:'c'+Date.now(),text:'New consequence',icon:'ti-alert-circle'});save();render.settings();editConsequence(S.consequences.length-1);}
+
+let toastT;
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';
+    t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg3);border:1px solid var(--border2);color:var(--txt);padding:10px 18px;border-radius:99px;font-size:13px;font-weight:600;z-index:300;transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center';
+    document.body.appendChild(t);}
+  t.textContent=msg;clearTimeout(toastT);
+  requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
+  toastT=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2500);
+}
+
+render.home();
+
+// ── PWA: register service worker ──────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('[SW] registered, scope:', reg.scope))
+      .catch(err => console.warn('[SW] registration failed:', err));
+  });
+}
+</script>
+</body>
+</html>
