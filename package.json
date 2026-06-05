@@ -1,0 +1,12 @@
+{
+  "name": "75hard-tracker",
+  "version": "1.0.0",
+  "description": "75 Hard challenge tracker PWA with Telegram bot reminders",
+  "type": "module",
+  "dependencies": {
+    "@vercel/kv": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

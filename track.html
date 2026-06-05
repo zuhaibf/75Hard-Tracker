@@ -506,21 +506,45 @@ render.settings=function(){
         </div>`).join('')}
       <button class="btn btn-outline" style="margin-top:12px;font-size:13px" onclick="addConsequence()"><i class="ti ti-plus"></i>Add Consequence</button>
     </div>
-    <div class="section-head"><i class="ti ti-brand-telegram"></i>Telegram Bot (Coming Soon)</div>
+    <div class="section-head"><i class="ti ti-brand-telegram" style="color:#2AABEE"></i>Telegram Reminders</div>
     <div class="card">
-      <p style="font-size:13px;color:var(--txt2);margin-bottom:12px;line-height:1.5">Connect a Telegram bot to receive reminders and log tasks remotely.</p>
-      <div style="margin-bottom:12px"><label class="smuted">Your Tracking Token</label>
-        <div style="display:flex;gap:8px;margin-top:6px">
-          <input class="input" style="flex:1;font-family:monospace;font-size:13px" readonly value="${getToken()}" id="token-inp"/>
-          <button class="btn btn-outline" style="width:auto;padding:10px 14px;font-size:12px" onclick="copyToken()"><i class="ti ti-copy"></i></button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(42,171,238,0.15);border:1px solid rgba(42,171,238,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-brand-telegram" style="font-size:22px;color:#2AABEE"></i>
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:600">@my75hard_bot</div>
+          <div class="smuted">4 daily reminders — 7am, 12pm, 6pm, 9pm</div>
         </div>
       </div>
-      <div style="background:var(--bg3);border-radius:var(--r2);padding:12px">
-        <div style="font-size:12px;color:var(--txt3);margin-bottom:6px;font-weight:600;display:flex;align-items:center;gap:6px"><i class="ti ti-bell" style="font-size:14px"></i>Scheduled reminders</div>
-        ${[['07:00','Progress photo reminder','ti-camera'],['12:00','Water check-in','ti-droplet'],['18:00','Outdoor workout check','ti-sun'],['21:00','Finish remaining tasks','ti-checklist']].map(([t,m,ic])=>`
-          <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
-            <i class="ti ${ic}" style="font-size:14px;color:var(--txt3);width:16px"></i>
-            <span style="color:var(--accent);min-width:44px">${t}</span>
+      <div style="background:var(--bg3);border-radius:var(--r2);padding:14px;margin-bottom:14px">
+        <div class="smuted" style="margin-bottom:10px;font-weight:600;letter-spacing:0.5px">HOW TO CONNECT</div>
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div>
+          <div style="font-size:13px;color:var(--txt2)">Open Telegram and search <span style="color:var(--accent);font-weight:600">@my75hard_bot</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div>
+          <div style="font-size:13px;color:var(--txt2)">Send this message to the bot:</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 12px;margin:0 0 8px 30px;display:flex;align-items:center;gap:8px">
+          <code style="font-size:12px;color:var(--accent2);flex:1;word-break:break-all">/start ${getToken()}</code>
+          <button onclick="copyStartCmd()" style="background:none;border:none;color:var(--txt3);cursor:pointer;flex-shrink:0;padding:2px"><i class="ti ti-copy" style="font-size:16px"></i></button>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--green);color:var(--bg);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">✓</div>
+          <div style="font-size:13px;color:var(--txt2)">Done! Reminders start immediately.</div>
+        </div>
+      </div>
+      <a href="https://t.me/my75hard_bot" target="_blank" class="btn btn-primary" style="text-decoration:none;display:flex">
+        <i class="ti ti-brand-telegram"></i>Open @my75hard_bot
+      </a>
+      <div style="background:var(--bg3);border-radius:var(--r2);padding:12px;margin-top:12px">
+        <div style="font-size:12px;color:var(--txt3);margin-bottom:8px;font-weight:600;display:flex;align-items:center;gap:6px"><i class="ti ti-bell" style="font-size:14px"></i>Reminder schedule (IST)</div>
+        ${[['07:00','Morning check-in','ti-sun'],['12:00','Water check-in','ti-droplet'],['18:00','Outdoor workout check','ti-sun-2'],['21:00','Evening wrap-up','ti-checklist']].map(([t,m,ic])=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
+            <i class="ti ${ic}" style="font-size:13px;color:var(--txt3);width:16px"></i>
+            <span style="color:var(--accent);min-width:44px;font-weight:600">${t}</span>
             <span style="color:var(--txt2)">${m}</span>
           </div>`).join('')}
       </div>
@@ -631,6 +655,7 @@ function confirmWipe(){
 function doWipe(){S=defaultState();save();forceClose();render.home();}
 function getToken(){if(!S._token){S._token='75H-'+Math.random().toString(36).slice(2,10).toUpperCase();save();}return S._token;}
 function copyToken(){navigator.clipboard?.writeText(getToken()).then(()=>showToast('Token copied'));}
+function copyStartCmd(){navigator.clipboard?.writeText('/start '+getToken()).then(()=>showToast('Command copied 2014 paste it in Telegram!'));}
 function editConsequence(i){
   const c=S.consequences[i];
   openModal(`
