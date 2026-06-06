@@ -707,7 +707,7 @@ async function syncReminders(){
   const btn=document.getElementById('sync-btn');
   if(btn){btn.innerHTML='<i class="ti ti-loader" style="font-size:14px"></i>Syncing…';btn.disabled=true;}
   try{
-    const res=await fetch(`/api/reminders?token=${token}`,{
+    const res=await fetch(`/api/reminder?token=${token}`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({reminders:S.customReminders||[]}),
