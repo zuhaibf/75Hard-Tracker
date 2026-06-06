@@ -3,860 +3,755 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#142017"/>
+<meta name="theme-color" content="#0d1a0d"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="75 Hard"/>
-<link rel="manifest" href="manifest.json"/>
-<link rel="apple-touch-icon" href="icons/icon-192.png"/>
 <title>75 Hard</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-
 :root{
-  /* ── Main palette ── */
-  --bg:#142017;--bg2:#191e16;--bg3:#1e2a1d;--bg4:#253124;
-  --txt:#d0cfde;--txt2:#7f868e;--txt3:#37532a;
-  --accent:#5a42ee;--accent2:#bff834;--accentbg:rgba(90,66,238,0.15);
-  --green:#1fb788;--greenbg:rgba(31,183,136,0.12);
-  --lime:#bff834;--limebg:rgba(191,248,52,0.13);
-  --red:#ca7732;--redbg:rgba(202,119,50,0.13);
-  --amber:#bff834;--amberbg:rgba(191,248,52,0.12);
-  --blue:#3f1ffb;--bluebg:rgba(63,31,251,0.13);
-  --border:rgba(191,248,52,0.07);--border2:rgba(191,248,52,0.14);
-  --r:14px;--r2:10px;--r3:20px;
-  /* ── Progress palette ── */
-  --p-lime:#c7ff33;--p-green:#84bc39;--p-bg:#0b0f08;
-  --p-card:#1b2610;--p-mid:#334d2a;--p-teal:#21b788;
-  --p-orange:#de8236;--p-muted:#6f7680;
+  --bg:#0e0e0e;
+  --bg2:#141414;
+  --bg3:#1a1f1a;
+  --bg4:#1f261f;
+  --bg5:#242c24;
+  --txt:#e8f0e8;
+  --txt2:#7a9a7a;
+  --txt3:#4a6a4a;
+  --neon:#c8ff00;
+  --neon2:#b0e800;
+  --neonbg:rgba(200,255,0,0.08);
+  --neonborder:rgba(200,255,0,0.3);
+  --neonborderlo:rgba(200,255,0,0.15);
+  --amber:#e8820c;
+  --amberbg:rgba(232,130,12,0.12);
+  --red:#ff4040;
+  --redbg:rgba(255,64,64,0.08);
+  --redborder:rgba(255,64,64,0.25);
+  --blue:#38bdf8;
+  --border:rgba(200,255,0,0.07);
+  --border2:rgba(200,255,0,0.13);
+  --r:14px;--r2:10px;
 }
-
-html,body{
-  height:100%;
-  background:var(--bg);
-  color:var(--txt);
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
-  overflow:hidden;
-}
-
-/* ── PWA safe-area fix: push content below notch/status bar ── */
-#app{
-  height:100dvh;
-  display:flex;
-  flex-direction:column;
-  max-width:430px;
-  margin:0 auto;
-  position:relative;
-  /* top inset accounts for notch/Dynamic Island in standalone PWA */
-  padding-top:env(safe-area-inset-top);
-}
-
-/* ── Bottom nav — sits flush, clears home indicator ── */
-#nav{
-  display:flex;
-  background:rgba(20,32,23,0.96);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
-  border-top:1px solid var(--border);
-  /* bottom safe area covers home indicator bar */
-  padding:8px 0 max(10px,env(safe-area-inset-bottom));
-  flex-shrink:0;
-  z-index:100;
-}
-
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border:none;background:none;color:var(--txt2);cursor:pointer;transition:color .2s;font-size:10px;font-weight:600;letter-spacing:0.3px}
-.nav-btn.active{color:var(--lime)}
-.nav-btn i{font-size:22px}
-
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
+/* NAV */
+#nav{display:flex;background:rgba(13,26,13,0.97);backdrop-filter:blur(20px);border-top:1px solid var(--border2);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:none;background:none;color:var(--txt3);cursor:pointer;transition:color .2s;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.nav-btn.active{color:var(--neon)}
+.nav-btn i{font-size:20px}
+/* PAGES */
 #pages{flex:1;overflow:hidden;position:relative}
-.page{position:absolute;inset:0;overflow-y:auto;transition:opacity .25s,transform .25s;opacity:0;pointer-events:none;transform:translateY(8px)}
+.page{position:absolute;inset:0;overflow-y:auto;transition:opacity .2s,transform .2s;opacity:0;pointer-events:none;transform:translateY(6px)}
 .page.active{opacity:1;pointer-events:all;transform:translateY(0)}
-.page-inner{padding:20px 16px 24px;min-height:100%}
-
-h1{font-size:28px;font-weight:700;letter-spacing:-0.5px}
-h2{font-size:20px;font-weight:600;letter-spacing:-0.3px}
-h3{font-size:15px;font-weight:600}
-.muted{color:var(--txt2)}
-.smuted{color:var(--txt2);font-size:12px}
-
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
-.card.glow{border-color:rgba(191,248,52,0.25);box-shadow:0 0 24px rgba(191,248,52,0.06)}
-
-/* ring */
-.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 0}
-.ring-track{fill:none;stroke:var(--bg3);stroke-width:10}
-.ring-fill{fill:none;stroke:var(--lime);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
-.ring-label{text-anchor:middle;dominant-baseline:central;font-size:28px;font-weight:700;fill:var(--txt)}
-.ring-sub{text-anchor:middle;dominant-baseline:central;font-size:13px;fill:var(--txt2)}
-
-/* task cards */
-.task-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s;user-select:none}
-.task-card.done{border-color:rgba(31,183,136,0.3);background:rgba(31,183,136,0.05)}
-.task-card:active{transform:scale(0.98)}
-.task-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.task-icon i{font-size:22px}
+.page-inner{padding:20px 16px 32px;min-height:100%}
+/* CARDS */
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
+/* TASK CARDS */
+.task-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:16px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .18s;user-select:none}
+.task-card.done{border-color:var(--neonborder);background:rgba(200,255,0,0.04)}
+.task-card:active{transform:scale(0.985)}
+.task-chk{width:40px;height:40px;border-radius:10px;border:2px solid var(--neonborder);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;background:transparent}
+.task-card.done .task-chk{background:var(--neon);border-color:var(--neon)}
+.task-card.done .task-chk i{color:var(--bg);font-size:20px}
 .task-body{flex:1;min-width:0}
-.task-name{font-size:14px;font-weight:600;margin-bottom:2px}
-.task-desc{font-size:12px;color:var(--txt2)}
-.task-time{font-size:11px;color:var(--green);margin-top:2px}
-.task-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s}
-.task-card.done .task-check{background:var(--green);border-color:var(--green)}
-.task-card.done .task-check i{color:var(--bg);font-size:14px}
-
-/* stats */
-.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px;text-align:center}
-.stat-num{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
-.stat-lbl{font-size:11px;color:var(--txt2);letter-spacing:0.4px;text-transform:uppercase}
-
-/* quote */
-.quote-card{background:rgba(90,66,238,0.1);border:1px solid rgba(90,66,238,0.2);border-radius:var(--r);padding:18px;margin-bottom:16px}
-.quote-text{font-size:15px;font-style:italic;line-height:1.6;color:var(--txt);margin-bottom:8px}
-.quote-author{font-size:12px;color:var(--txt2)}
-
-/* water */
-.water-visual{height:120px;background:var(--bg3);border-radius:var(--r2);overflow:hidden;position:relative;margin:12px 0}
-.water-fill{position:absolute;bottom:0;left:0;right:0;background:var(--accent);transition:height .5s cubic-bezier(.4,0,.2,1);opacity:0.55}
-.water-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--txt)}
-
-/* quick buttons */
-.quick-btns{display:flex;gap:8px;flex-wrap:wrap}
-.qbtn{flex:1;min-width:60px;padding:10px 8px;border:1px solid var(--border2);background:var(--bg3);color:var(--txt);border-radius:var(--r2);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
-.qbtn:active{transform:scale(0.95);background:var(--limebg)}
-
-/* progress bar */
-.pbar-wrap{background:var(--bg3);border-radius:99px;height:8px;overflow:hidden;margin:8px 0}
-.pbar-fill{height:100%;border-radius:99px;transition:width .4s ease;background:var(--lime)}
-.pbar-fill.green{background:var(--green)}
-.pbar-fill.blue{background:var(--accent)}
-
-/* journal */
-.journal-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);color:var(--txt);font-size:14px;padding:12px;resize:none;font-family:inherit;line-height:1.5}
-.journal-textarea:focus{outline:none;border-color:var(--lime)}
-
-/* mood */
-.mood-row{display:flex;gap:6px;flex-wrap:wrap}
-.mood-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--border);background:var(--bg3);color:var(--txt2);border-radius:99px;font-size:12px;cursor:pointer;transition:all .15s}
-.mood-btn i{font-size:16px}
-.mood-btn.active{border-color:var(--lime);background:var(--limebg);color:var(--lime)}
-
-/* chart bars */
-.chart-bar-wrap{display:flex;align-items:flex-end;gap:4px;height:80px;margin:12px 0}
-.cbar{flex:1;background:var(--bg4);border-radius:4px 4px 0 0;min-width:0;opacity:0.7;transition:height .4s;cursor:pointer}
-.cbar:hover{opacity:1}
-.cbar.today{opacity:1;background:var(--lime)}
-
-/* badges */
-.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.badge{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 10px;text-align:center;transition:all .2s}
-.badge.unlocked{border-color:rgba(191,248,52,0.3);background:var(--limebg)}
-.badge-icon{font-size:26px;margin-bottom:6px;display:flex;justify-content:center}
-.badge-icon i{font-size:28px}
-.badge.unlocked .badge-icon i{color:var(--lime)}
-.badge:not(.unlocked) .badge-icon i{color:var(--txt2);opacity:0.3}
-.badge-name{font-size:11px;font-weight:600;color:var(--txt2)}
-.badge-day{font-size:10px;color:var(--txt2);margin-top:2px}
-
-/* fail card */
-.fail-card{background:rgba(202,119,50,0.1);border:1px solid rgba(202,119,50,0.2);border-radius:var(--r);padding:18px;margin-bottom:12px}
-.consequence-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-.consequence-item:last-child{border-bottom:none}
-.consequence-item i{font-size:20px;color:var(--red);flex-shrink:0}
-
-/* section headings */
-.section-head{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txt2);margin:20px 0 10px;display:flex;align-items:center;gap:6px}
-.section-head i{font-size:14px}
-.section-head:first-child{margin-top:0}
-
-/* modal / overlay */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.task-name{font-size:14px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:3px;color:var(--txt)}
+.task-card.done .task-name{opacity:0.4;text-decoration:line-through}
+.task-desc{font-size:12px;color:var(--txt2);font-weight:500}
+.task-time{font-size:10px;color:var(--neon);margin-top:3px;display:flex;align-items:center;gap:3px;font-weight:700}
+/* PILL */
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;border:2px solid;flex-shrink:0}
+.pill-neon{background:transparent;color:var(--neon);border-color:var(--neonborder)}
+.pill-blue{background:rgba(56,189,248,0.1);color:var(--blue);border-color:rgba(56,189,248,0.35)}
+.pill-dim{background:var(--bg4);color:var(--txt3);border-color:var(--border2)}
+.pill-red{background:var(--redbg);color:var(--red);border-color:var(--redborder)}
+/* PROGRESS BAR */
+.pbar-wrap{background:var(--bg5);border-radius:99px;height:5px;overflow:hidden;margin:6px 0}
+.pbar-fill{height:100%;border-radius:99px;transition:width .4s ease;background:var(--neon)}
+/* STAT BOX */
+.stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center}
+.stat-box.active{border-color:var(--neonborder);border-width:2px}
+.stat-num{font-size:32px;font-weight:900;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.stat-lbl{font-size:9px;color:var(--txt3);letter-spacing:1.5px;text-transform:uppercase;font-weight:800}
+/* WALL */
+.wall-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:10px 0}
+.wall-cell{aspect-ratio:1;border-radius:7px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--bg)}
+.wall-cell.done{background:var(--neon)}
+.wall-cell.today{background:transparent;border:2px solid var(--neon);color:var(--neon)}
+.wall-cell.missed{background:rgba(255,64,64,0.15);border:1px solid var(--redborder);color:var(--red)}
+.wall-cell.future{background:var(--bg4);border:1px solid var(--border);color:transparent}
+/* AGGREGATES */
+.agg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.agg-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:13px}
+.agg-icon{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--txt3);margin-bottom:6px;text-transform:uppercase}
+.agg-num{font-size:28px;font-weight:900;color:var(--txt);line-height:1;margin-bottom:2px}
+.agg-total{font-size:11px;color:var(--txt3)}
+/* PHASE */
+.phase-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.phase-item:last-child{border-bottom:none}
+.phase-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.phase-dot.done{background:var(--neon)}
+.phase-dot.active{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.phase-dot.locked{background:var(--bg5);border:2px solid var(--border2)}
+/* BADGE */
+.badge{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:12px 6px;text-align:center}
+.badge.unlocked{border-color:rgba(232,130,12,0.4);background:rgba(232,130,12,0.06)}
+.badge-icon i{font-size:24px;color:var(--txt3);opacity:0.3}
+.badge.unlocked .badge-icon i{color:var(--amber);opacity:1}
+.badge-name{font-size:9px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:0.4px;margin-top:5px}
+.badge-day{font-size:9px;color:var(--txt3);margin-top:1px}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
 .overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--bg2);border-radius:24px 24px 0 0;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom));width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:85dvh;overflow-y:auto}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:20px 20px 0 0;padding:20px;width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:85dvh;overflow-y:auto}
 .overlay.open .modal{transform:translateY(0)}
-.modal-handle{width:36px;height:4px;background:var(--bg4);border-radius:99px;margin:0 auto 18px}
-
-/* buttons */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--r2);font-size:15px;font-weight:600;cursor:pointer;border:none;width:100%;transition:all .15s}
-.btn i{font-size:18px}
+.modal-handle{width:32px;height:3px;background:var(--bg5);border-radius:99px;margin:0 auto 16px}
+/* BTN */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--r2);font-size:13px;font-weight:800;cursor:pointer;border:none;width:100%;transition:all .15s;letter-spacing:1px;text-transform:uppercase}
 .btn:active{transform:scale(0.97)}
-.btn-primary{background:var(--lime);color:#0b0f08}
-.btn-danger{background:rgba(202,119,50,0.15);border:1px solid rgba(202,119,50,0.3);color:var(--red)}
+.btn-primary{background:var(--neon);color:var(--bg)}
+.btn-danger{background:var(--redbg);border:1px solid var(--redborder);color:var(--red)}
 .btn-outline{background:transparent;border:1px solid var(--border2);color:var(--txt)}
-
-/* input */
-.input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);color:var(--txt);font-size:15px;padding:12px 14px;width:100%;font-family:inherit}
-.input:focus{outline:none;border-color:var(--lime)}
-
-@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-.pop{animation:pop .3s ease}
-
-/* photo */
-.photo-zone{border:2px dashed var(--border2);border-radius:var(--r);height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--txt2);transition:all .2s}
-.photo-zone i{font-size:36px}
-.photo-zone:hover{border-color:var(--lime);color:var(--lime);background:var(--limebg)}
-.photo-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-top:8px}
-.photo-thumb{width:80px;height:80px;border-radius:var(--r2);object-fit:cover;flex-shrink:0;border:2px solid var(--border)}
-
-/* chips */
-.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:0.3px}
-.chip i{font-size:13px}
-.chip.green{background:var(--greenbg);color:var(--green)}
-.chip.amber{background:var(--limebg);color:var(--lime)}
-.chip.red{background:var(--redbg);color:var(--red)}
-.chip.blue{background:var(--bluebg);color:var(--accent2)}
-
-/* ── Progress page overrides ── */
-.prog-hero{background:var(--p-card);border:1px solid rgba(199,255,51,0.12);border-radius:var(--r);padding:20px;margin-bottom:12px}
-.prog-big{font-size:72px;font-weight:800;line-height:1;color:var(--p-lime);letter-spacing:-3px}
-.prog-stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.prog-stat{background:var(--p-card);border:1px solid rgba(199,255,51,0.08);border-radius:var(--r2);padding:14px;text-align:center}
-.prog-stat.active-stat{border-color:rgba(199,255,51,0.3);box-shadow:0 0 16px rgba(199,255,51,0.06)}
-.prog-num{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px;color:var(--p-lime)}
-.prog-lbl{font-size:10px;color:var(--p-muted);letter-spacing:0.5px;text-transform:uppercase}
-
-/* wall of discipline */
-.wall-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px}
-.wall-cell{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s}
-.wall-cell.done{background:var(--p-lime);color:var(--p-bg)}
-.wall-cell.today{background:transparent;border:2px solid var(--p-lime);color:var(--p-lime)}
-.wall-cell.ahead{background:var(--p-mid);color:var(--p-muted)}
+.input{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r2);color:var(--txt);font-size:14px;padding:12px;width:100%;font-family:inherit}
+.input:focus{outline:none;border-color:var(--neon)}
+/* TAKE BTN */
+.take-btn{background:var(--neon);color:var(--bg);border:none;border-radius:var(--r2);padding:9px 14px;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1px;text-transform:uppercase;flex-shrink:0;transition:all .15s}
+.take-btn:active{transform:scale(0.95)}
+/* QUICK BTNS */
+.quick-btns{display:flex;gap:6px}
+.qbtn{flex:1;padding:10px 6px;border:1px solid var(--border2);background:var(--bg4);color:var(--txt2);border-radius:var(--r2);font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;text-align:center}
+.qbtn:active{transform:scale(0.95);background:var(--neonbg);color:var(--neon);border-color:var(--neonborder)}
+/* LABEL */
+.lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3)}
+/* SECTION HEAD */
+.sec{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin:18px 0 8px;display:flex;align-items:center;gap:6px}
+.sec i{font-size:12px}
+.sec:first-child{margin-top:0}
+/* FAIL LINK */
+.fail-link{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--txt3);font-size:10px;font-weight:800;letter-spacing:1px;padding:14px;cursor:pointer;border:none;background:none;text-transform:uppercase;width:100%;margin-top:8px}
+.fail-link:hover{color:var(--red)}
+/* SEPARATOR */
+.sep{height:1px;background:var(--border);margin:6px 0 16px}
+/* PHOTO */
+.photo-zone{border:1px dashed var(--border2);border-radius:var(--r);height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--txt3);transition:all .2s}
+.photo-zone:hover{border-color:var(--neon);color:var(--neon)}
+.photo-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-top:8px}
+.photo-thumb{width:72px;height:72px;border-radius:var(--r2);object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+.pop{animation:pop .22s ease}
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="pages">
-    <div class="page active" id="p-home"><div class="page-inner" id="home-content"></div></div>
-    <div class="page" id="p-tasks"><div class="page-inner" id="tasks-content"></div></div>
-    <div class="page" id="p-progress"><div class="page-inner" id="progress-content"></div></div>
-    <div class="page" id="p-log"><div class="page-inner" id="log-content"></div></div>
-    <div class="page" id="p-settings"><div class="page-inner" id="settings-content"></div></div>
-  </div>
-
-  <nav id="nav">
-    <button class="nav-btn active" data-page="home" onclick="nav('home')">
-      <i class="ti ti-home"></i>Today
-    </button>
-    <button class="nav-btn" data-page="tasks" onclick="nav('tasks')">
-      <i class="ti ti-checklist"></i>Tasks
-    </button>
-    <button class="nav-btn" data-page="progress" onclick="nav('progress')">
-      <i class="ti ti-chart-area-line"></i>Progress
-    </button>
-    <button class="nav-btn" data-page="log" onclick="nav('log')">
-      <i class="ti ti-notebook"></i>Journal
-    </button>
-    <button class="nav-btn" data-page="settings" onclick="nav('settings')">
-      <i class="ti ti-settings"></i>Settings
-    </button>
-  </nav>
+<div id="pages">
+  <div class="page active" id="p-today"><div class="page-inner" id="today-content"></div></div>
+  <div class="page" id="p-progress"><div class="page-inner" id="progress-content"></div></div>
+  <div class="page" id="p-stats"><div class="page-inner" id="stats-content"></div></div>
+  <div class="page" id="p-photos"><div class="page-inner" id="photos-content"></div></div>
+  <div class="page" id="p-settings"><div class="page-inner" id="settings-content"></div></div>
 </div>
-
+<nav id="nav">
+  <button class="nav-btn active" data-page="today" onclick="nav('today')"><i class="ti ti-bolt"></i>Today</button>
+  <button class="nav-btn" data-page="progress" onclick="nav('progress')"><i class="ti ti-chart-line"></i>Progress</button>
+  <button class="nav-btn" data-page="stats" onclick="nav('stats')"><i class="ti ti-layout-grid"></i>Stats</button>
+  <button class="nav-btn" data-page="photos" onclick="nav('photos')"><i class="ti ti-camera"></i>Photos</button>
+  <button class="nav-btn" data-page="settings" onclick="nav('settings')"><i class="ti ti-settings"></i>Settings</button>
+</nav>
+</div>
 <div class="overlay" id="overlay" onclick="closeModal(event)">
-  <div class="modal" id="modal">
-    <div class="modal-handle"></div>
-    <div id="modal-body"></div>
-  </div>
+  <div class="modal" id="modal"><div class="modal-handle"></div><div id="modal-body"></div></div>
 </div>
-
 <input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(event)"/>
 
 <script>
-const STORAGE_KEY='75hard_v3';
-
-/* ── Task definitions: Diet+NoSoda merged, Workout1=Outdoor, Workout2=Indoor ── */
-const TASKS_DEF=[
-  {id:'diet',  icon:'ti-salad',   name:'Clean Eating',  desc:'No cheat meals. No soda. Stick to your plan.',color:'#1fb788'},
-  {id:'w1',    icon:'ti-run',     name:'Workout 1',     desc:'45 min — must be outdoors',                   color:'#bff834',hasOutdoor:true,  forceOutdoor:true},
-  {id:'w2',    icon:'ti-barbell', name:'Workout 2',     desc:'45 min — any exercise, separate session',     color:'#5a42ee',hasOutdoor:true},
-  {id:'water', icon:'ti-droplet', name:'Drink 1 Gallon',desc:'~3.8 litres of water',                        color:'#3f1ffb'},
-  {id:'read',  icon:'ti-book',    name:'Read 10 Pages', desc:'Non-fiction only',                             color:'#84bc39'},
-  {id:'photo', icon:'ti-camera',  name:'Progress Photo',desc:'Front, side, or back',                        color:'#ca7732'},
+const STORAGE_KEY='75hard_v4';
+const TASKS=[
+  {id:'diet', icon:'ti-salad',   name:'Follow Diet',    desc:'No cheat meals. Stick to your plan.',   color:'#c8ff00'},
+  {id:'alc',  icon:'ti-ban',     name:'No Alcohol',     desc:'Zero exceptions. Zero excuses.',         color:'#ff6b6b'},
+  {id:'w1',   icon:'ti-barbell', name:'Workout 1',      desc:'Indoor — any exercise, min 45 min.',    color:'#c8ff00', pill:'45 MIN', pillStyle:'neon', hasOutdoor:true},
+  {id:'w2',   icon:'ti-run',     name:'Workout 2',      desc:'Outside only — walk, run, or train.',   color:'#38bdf8', pill:'OUTDOOR', pillStyle:'blue'},
+  {id:'water',icon:'ti-droplet', name:'Drink Water',    desc:'4 litres. No exceptions.',              color:'#38bdf8', isWater:true},
+  {id:'read', icon:'ti-book-2',  name:'Read 10 Pages',  desc:'Non-fiction only. No audiobooks.',      color:'#c8ff00'},
+  {id:'photo',icon:'ti-camera',  name:'Progress Photo', desc:'Daily body photo. Document the change.', color:'#e8820c', isPhoto:true},
+];
+const PHASES=[
+  {n:1,name:'The Foundation', days:'1–7',  desc:'7 days of zero compromise.',          start:1,end:7},
+  {n:2,name:'The Grind',      days:'8–21', desc:'Build momentum through resistance.',   start:8,end:21},
+  {n:3,name:'The Crucible',   days:'22–40',desc:'When most people quit.',               start:22,end:40},
+  {n:4,name:'The Forge',      days:'41–55',desc:'Identity transformation begins.',      start:41,end:55},
+  {n:5,name:'The Champion',   days:'56–75',desc:'You are not who you were.',            start:56,end:75},
 ];
 
-const QUOTES=[
-  {text:"The only easy day was yesterday.",author:"Navy SEALs"},
-  {text:"Discipline equals freedom.",author:"Jocko Willink"},
-  {text:"Hard times create strong men.",author:"G. Michael Hopf"},
-  {text:"Don't stop when you're tired. Stop when you're done.",author:"David Goggins"},
-  {text:"The pain you feel today will be the strength you feel tomorrow.",author:"Arnold Schwarzenegger"},
-  {text:"You don't have to be great to start, but you have to start to be great.",author:"Zig Ziglar"},
-  {text:"Suffer the pain of discipline or suffer the pain of regret.",author:"Jim Rohn"},
-];
+function def(){return{startDate:null,days:{},settings:{name:'Warrior'},consequences:[
+  {id:'c1',text:'₹500 donation to a cause you dislike',icon:'ti-coin'},
+  {id:'c2',text:'Extra 45 min outdoor run next day',icon:'ti-run'},
+  {id:'c3',text:'No screen time after 8 PM for a week',icon:'ti-device-mobile-off'},
+]};}
 
-function defaultState(){
-  return {
-    startDate:null, days:{},
-    consequences:[
-      {id:'c1',text:'₹500 donation to a cause you dislike',icon:'ti-coin'},
-      {id:'c2',text:'Extra 45 min outdoor run next day',    icon:'ti-run'},
-      {id:'c3',text:'No screen time after 8 PM for a week',icon:'ti-device-mobile-off'},
-    ],
-    settings:{name:'Warrior'},
-  };
-}
-
-let S=(()=>{ try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||defaultState();}catch{return defaultState();} })();
+let S=(()=>{try{const d=JSON.parse(localStorage.getItem(STORAGE_KEY));return d||def();}catch{return def();}})();
 function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(S));}catch{}}
 function today(){return new Date().toISOString().slice(0,10);}
-function dayNum(){
-  if(!S.startDate)return 0;
-  const d=Math.floor((new Date(today())-new Date(S.startDate))/86400000)+1;
-  return Math.min(Math.max(d,1),75);
-}
-function dayData(key){if(!S.days[key])S.days[key]={tasks:{},water:0,pages:0,journal:'',wins:'',struggles:'',mood:0,energy:0,photos:[]};return S.days[key];}
-function todayData(){return dayData(today());}
+function dayNum(){if(!S.startDate)return 0;const d=Math.floor((new Date(today())-new Date(S.startDate))/86400000)+1;return Math.min(Math.max(d,1),75);}
 
-function completedCount(dd){return TASKS_DEF.filter(t=>dd.tasks[t.id]).length;}
-function allDone(dd){return TASKS_DEF.every(t=>dd.tasks[t.id]);}
-function pct(dd){return Math.round(completedCount(dd)/TASKS_DEF.length*100);}
+// Always return a safe day data object
+function dayData(k){
+  if(!S.days[k]||typeof S.days[k]!=='object')S.days[k]={tasks:{},water:0,pages:0,photos:[]};
+  const dd=S.days[k];
+  if(!dd.tasks||typeof dd.tasks!=='object')dd.tasks={};
+  if(typeof dd.water!=='number')dd.water=0;
+  if(typeof dd.pages!=='number')dd.pages=0;
+  if(!Array.isArray(dd.photos))dd.photos=[];
+  return dd;
+}
+function td(){return dayData(today());}
+
+function taskDone(dd,t){
+  if(!dd||!dd.tasks)return false;
+  if(t.isWater)return(dd.water||0)>=4000;
+  return!!dd.tasks[t.id];
+}
+function allDone(dd){return dd&&TASKS.every(t=>taskDone(dd,t));}
+function countDone(dd){return TASKS.filter(t=>taskDone(dd,t)).length;}
 function streak(){
   let s=0,d=new Date(today());
-  while(true){const k=d.toISOString().slice(0,10);const dd=S.days[k];if(!dd||!allDone(dd))break;s++;d.setDate(d.getDate()-1);}
+  for(;;){const k=d.toISOString().slice(0,10);const dd=S.days[k];if(!dd||!allDone(dd))break;s++;d.setDate(d.getDate()-1);}
   return s;
 }
+function daysLeft(){return Math.max(75-dayNum(),0);}
 
-let curPage='home';
+let curPage='today';
 function nav(pg){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===pg));
   document.getElementById('p-'+pg).classList.add('active');
-  curPage=pg; render[pg]();
+  curPage=pg;render[pg]();
 }
 function openModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('overlay').classList.add('open');}
 function closeModal(e){if(e.target===document.getElementById('overlay'))document.getElementById('overlay').classList.remove('open');}
 function forceClose(){document.getElementById('overlay').classList.remove('open');}
 
-/* ═══════════════════════════════════════════ HOME ══════════════════════════════ */
 const render={};
-render.home=function(){
-  const dd=todayData(),done=completedCount(dd),total=TASKS_DEF.length,prog=done/total;
-  const R=54,C=2*Math.PI*R,dash=C*(1-prog),dn=dayNum(),q=QUOTES[(dn||1)%QUOTES.length],str=streak();
 
+/* ── TODAY ── */
+render.today=function(){
+  const dd=td(),dn=dayNum(),str=streak(),done=countDone(dd);
   if(!S.startDate){
-    document.getElementById('home-content').innerHTML=`
-      <div style="text-align:center;padding:60px 20px 40px">
-        <i class="ti ti-bolt" style="font-size:64px;color:var(--lime);display:block;margin-bottom:16px"></i>
-        <h1 style="font-size:32px;margin-bottom:8px">75 Hard</h1>
-        <p class="muted" style="margin-bottom:32px;font-size:15px;line-height:1.6">The hardest mental toughness program ever devised.<br>No substitutions. No modifications. No excuses.</p>
-        <div class="card" style="margin-bottom:24px;text-align:left">
-          <div class="section-head"><i class="ti ti-user"></i>Your Name</div>
-          <input class="input" id="uname" placeholder="Enter your name" value="${S.settings.name||''}"/>
-          <div class="section-head" style="margin-top:16px"><i class="ti ti-calendar"></i>Start Date</div>
-          <input class="input" id="sdate" type="date" value="${today()}" style="margin-top:4px"/>
-        </div>
-        <button class="btn btn-primary" onclick="startChallenge()"><i class="ti ti-rocket"></i>Begin 75 Hard</button>
-        <p style="font-size:12px;color:var(--txt2);margin-top:16px;line-height:1.5">Once you start, missing any task means restarting from Day 1.<br>No exceptions. That's the point.</p>
-      </div>`;
+    document.getElementById('today-content').innerHTML=`
+    <div style="text-align:center;padding:50px 0 32px">
+      <div class="lbl" style="margin-bottom:10px">75 Hard Challenge</div>
+      <div style="font-size:52px;font-weight:900;color:var(--neon);line-height:1;margin-bottom:10px">STAY<br>HARD.</div>
+      <p style="font-size:13px;color:var(--txt2);margin-bottom:28px;line-height:1.7">No substitutions. No modifications.<br>No excuses. 75 days of discipline.</p>
+      <div class="card" style="text-align:left;margin-bottom:16px">
+        <div class="sec" style="margin-top:0">Your Name</div>
+        <input class="input" id="uname" placeholder="Enter your name" value="${S.settings.name||''}"/>
+        <div class="sec">Start Date</div>
+        <input class="input" id="sdate" type="date" value="${today()}"/>
+      </div>
+      <button class="btn btn-primary" onclick="startChallenge()"><i class="ti ti-rocket"></i>Begin 75 Hard</button>
+    </div>`;
     return;
   }
 
-  const remaining=TASKS_DEF.filter(t=>!dd.tasks[t.id]);
-  let remHtml=remaining.slice(0,3).map(t=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
-      <i class="ti ${t.icon}" style="font-size:18px;color:var(--txt2);width:20px;text-align:center"></i>
-      <span style="font-size:13px;color:var(--txt2)">${t.name}</span>
-    </div>`).join('');
-  if(remaining.length>3)remHtml+=`<div style="font-size:12px;color:var(--txt2);padding:8px 0">+${remaining.length-3} more tasks</div>`;
-
-  document.getElementById('home-content').innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-      <div>
-        <p style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txt2);margin-bottom:2px">75 HARD CHALLENGE</p>
-        <h1 style="font-size:36px;font-weight:800;letter-spacing:-1px">Day ${dn}</h1>
-      </div>
-      <div style="text-align:right">
-        <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;font-size:22px;font-weight:800;color:var(--lime)">
-          <i class="ti ti-flame" style="font-size:18px;color:var(--red)"></i>${str}
-        </div>
-        <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txt2)">STREAK</div>
-      </div>
-    </div>
-
-    <div class="pbar-wrap" style="margin:10px 0 4px"><div class="pbar-fill" style="width:${(done/total*100).toFixed(1)}%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--txt2);margin-bottom:16px">
-      <span>${done} / ${total} COMPLETE</span><span>${75-dn} DAYS LEFT</span>
-    </div>
-
-    <div class="ring-wrap">
-      <svg width="130" height="130" viewBox="0 0 130 130">
-        <circle class="ring-track" cx="65" cy="65" r="${R}" transform="rotate(-90 65 65)"/>
-        <circle class="ring-fill" cx="65" cy="65" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="${dash}" transform="rotate(-90 65 65)"/>
-        <text class="ring-label" x="65" y="60">${done}/${total}</text>
-        <text class="ring-sub" x="65" y="82">${prog===1?'COMPLETE':pct(dd)+'% done'}</text>
-      </svg>
-    </div>
-
-    <div class="stat-row">
-      <div class="stat-box"><div class="stat-num" style="color:var(--lime)">${dn}</div><div class="stat-lbl">Day</div></div>
-      <div class="stat-box"><div class="stat-num" style="color:var(--green)">${Math.round(pct(dd))}%</div><div class="stat-lbl">Today</div></div>
-    </div>
-
-    <div class="quote-card">
-      <div style="display:flex;gap:10px;align-items:flex-start">
-        <i class="ti ti-quote" style="font-size:20px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>
-        <div><div class="quote-text">${q.text}</div><div class="quote-author">— ${q.author}</div></div>
-      </div>
-    </div>
-
-    ${remaining.length===0?`
-      <div class="card glow" style="text-align:center;padding:20px">
-        <i class="ti ti-trophy" style="font-size:40px;color:var(--lime);display:block;margin-bottom:8px"></i>
-        <h3 style="color:var(--green);margin-bottom:4px">Day ${dn} Complete!</h3>
-        <p class="smuted">You crushed it. Rest up for tomorrow.</p>
-      </div>`:
-    `<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <h3>Still to do</h3>
-        <button class="btn btn-outline" style="width:auto;padding:6px 14px;font-size:12px" onclick="nav('tasks')">All Tasks <i class="ti ti-arrow-right" style="font-size:13px"></i></button>
-      </div>${remHtml}
-    </div>`}
-
-    <div style="margin-top:12px">
-      <div class="section-head"><i class="ti ti-chart-line"></i>75-Day Progress</div>
-      <div class="pbar-wrap"><div class="pbar-fill" style="width:${(dn/75*100).toFixed(1)}%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt2);margin-top:4px"><span>Day 1</span><span>Day 75</span></div>
-    </div>`;
-};
-
-/* ═══════════════════════════════════════════ TASKS ══════════════════════════════ */
-render.tasks=function(){
-  const dd=todayData(),dn=dayNum(),done=completedCount(dd);
-  const taskCards=TASKS_DEF.map(t=>{
-    const isDone=!!dd.tasks[t.id],ts=dd.tasks[t.id];
-    // w1 is forced outdoor; w2 has optional outdoor toggle
-    const isOutdoor=t.id==='w1'?true:(t.id==='w2'?!!dd.outdoor_w2:false);
-    const outdoorBadge=t.hasOutdoor&&t.id!=='w1'?`
-      <button onclick="event.stopPropagation();toggleOutdoor('${t.id}')" style="background:${isOutdoor?'rgba(191,248,52,0.15)':'var(--bg3)'};border:1px solid ${isOutdoor?'rgba(191,248,52,0.35)':'var(--border2)'};border-radius:8px;padding:5px 8px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:${isOutdoor?'var(--lime)':'var(--txt2)'};flex-shrink:0;transition:all .2s">
-        <i class="ti ti-sun" style="font-size:14px"></i>${isOutdoor?'Outdoor':'Indoor'}
-      </button>`:
-      t.id==='w1'?`<span style="display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:8px;background:rgba(191,248,52,0.12);border:1px solid rgba(191,248,52,0.25);font-size:11px;font-weight:600;color:var(--lime);flex-shrink:0"><i class="ti ti-sun" style="font-size:14px"></i>OUTDOOR</span>`:
-      t.id==='w2'&&!t.hasOutdoor?'':
-      '';
-
-    return `<div class="task-card ${isDone?'done':''}" onclick="toggleTask('${t.id}')" id="task-${t.id}">
-      <div class="task-icon" style="background:${t.color}22"><i class="ti ${t.icon}" style="color:${t.color}"></i></div>
+  const taskCards=TASKS.map(t=>{
+    const done2=taskDone(dd,t),ts=dd.tasks[t.id];
+    let pillHtml='';
+    if(t.pill) pillHtml=`<span class="pill pill-${t.pillStyle}" style="margin-left:8px">${t.pill}</span>`;
+    if(t.hasOutdoor){
+      const io=!!dd.outdoor_w1;
+      pillHtml+=`<button onclick="event.stopPropagation();toggleOutdoor('w1')" style="background:${io?'rgba(56,189,248,0.12)':'var(--bg4)'};border:1px solid ${io?'rgba(56,189,248,0.35)':'var(--border2)'};border-radius:6px;padding:3px 9px;cursor:pointer;font-size:10px;font-weight:800;color:${io?'#38bdf8':'var(--txt3)'};margin-left:6px;text-transform:uppercase;letter-spacing:0.5px;transition:all .15s">${io?'OUTDOOR':'INDOOR'}</button>`;
+    }
+    let rightEl='';
+    if(t.isWater){
+      const wl=(dd.water/1000).toFixed(1),wpct=Math.min(dd.water/4000*100,100);
+      rightEl=`<div style="font-size:11px;font-weight:900;color:#38bdf8;flex-shrink:0;min-width:40px;text-align:right">${wl}/4L</div>`;
+    }
+    if(t.isPhoto&&!done2) rightEl=`<button class="take-btn" onclick="event.stopPropagation();document.getElementById('photo-input').click()">TAKE</button>`;
+    return `<div class="task-card ${done2?'done':''}" onclick="toggleTask('${t.id}')" id="task-${t.id}">
+      <div class="task-chk">${done2?`<i class="ti ti-check"></i>`:''}</div>
+      <i class="ti ${t.icon}" style="font-size:20px;color:${done2?'var(--neon)':t.color};flex-shrink:0;width:22px;text-align:center"></i>
       <div class="task-body">
-        <div class="task-name" style="${isDone?'text-decoration:line-through;opacity:0.5':''}">${t.name}</div>
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px">
+          <span class="task-name">${t.name}</span>${pillHtml}
+        </div>
         <div class="task-desc">${t.desc}</div>
-        ${isDone&&ts?`<div class="task-time"><i class="ti ti-clock" style="font-size:11px"></i> Done at ${ts}</div>`:''}
+        ${done2&&ts?`<div class="task-time"><i class="ti ti-check" style="font-size:10px"></i>${ts}</div>`:''}
       </div>
-      ${t.id==='w2'?`<button onclick="event.stopPropagation();toggleOutdoor('${t.id}')" style="background:${isOutdoor?'rgba(191,248,52,0.15)':'var(--bg3)'};border:1px solid ${isOutdoor?'rgba(191,248,52,0.35)':'var(--border2)'};border-radius:8px;padding:5px 8px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:${isOutdoor?'var(--lime)':'var(--txt2)'};flex-shrink:0;transition:all .2s">
-        <i class="ti ti-sun" style="font-size:14px"></i>${isOutdoor?'Outdoor':'Indoor'}
-      </button>`:(t.id==='w1'?`<span style="display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:8px;background:rgba(191,248,52,0.12);border:1px solid rgba(191,248,52,0.25);font-size:11px;font-weight:600;color:var(--lime);flex-shrink:0"><i class="ti ti-sun" style="font-size:14px"></i>OUTDOOR</span>`:'')}
-      <div class="task-check" style="margin-left:6px">${isDone?`<i class="ti ti-check"></i>`:''}</div>
+      ${rightEl}
     </div>`;
   }).join('');
 
-  const wml=dd.water||0,wpct=Math.min(Math.round(wml/3800*100),100),pages=dd.pages||0;
-
-  document.getElementById('tasks-content').innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div>
-        <p style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txt2);margin-bottom:2px">75 HARD CHALLENGE</p>
-        <h2>Day ${dn}</h2>
-        <p class="smuted">${done}/${TASKS_DEF.length} completed</p>
+  const totalPct=Math.round(dn/75*100);
+  document.getElementById('today-content').innerHTML=`
+  <div class="lbl" style="margin-bottom:6px">75 Hard Challenge</div>
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+    <div style="font-size:52px;font-weight:900;line-height:1;letter-spacing:-1px">DAY ${dn}</div>
+    <div style="text-align:right;padding-top:4px">
+      <div style="font-size:32px;font-weight:900;color:var(--neon);line-height:1;display:flex;align-items:center;gap:4px">
+        <span style="color:var(--amber);font-size:26px">🔥</span>${str}
       </div>
-      <span class="chip ${done===TASKS_DEF.length?'green':'amber'}">${done}/${TASKS_DEF.length}</span>
+      <div class="lbl" style="color:var(--txt3)">Streak</div>
     </div>
-
-    ${taskCards}
-
-    <div class="section-head"><i class="ti ti-droplet"></i>Water Intake</div>
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <span style="font-size:14px;font-weight:600">${(wml/1000).toFixed(1)}L / 3.8L</span>
-        <span class="chip ${wpct>=100?'green':'amber'}">${wpct}%</span>
-      </div>
-      <div class="water-visual">
-        <div class="water-fill" style="height:${wpct}%"></div>
-        <div class="water-pct">${wpct}%</div>
-      </div>
-      <div class="quick-btns" style="margin-top:10px">
-        ${[200,300,500,750].map(ml=>`<button class="qbtn" onclick="addWater(${ml})">+${ml}ml</button>`).join('')}
-        <button class="qbtn" onclick="resetWater()" style="color:var(--txt2)"><i class="ti ti-refresh" style="font-size:15px"></i></button>
-      </div>
-    </div>
-
-    <div class="section-head"><i class="ti ti-book"></i>Reading</div>
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <span style="font-size:14px;font-weight:600">${pages} / 10 pages</span>
-        <span class="chip ${pages>=10?'green':'amber'}">${pages>=10?'Done':pages+' read'}</span>
-      </div>
-      <div class="pbar-wrap"><div class="pbar-fill green" style="width:${Math.min(pages/10*100,100)}%"></div></div>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        ${[1,2,5,10].map(n=>`<button class="qbtn" onclick="addPages(${n})">+${n}</button>`).join('')}
-        <button class="qbtn" onclick="setPages(0)" style="color:var(--txt2)"><i class="ti ti-refresh" style="font-size:15px"></i></button>
-      </div>
-    </div>
-
-    <div class="section-head"><i class="ti ti-camera"></i>Progress Photo</div>
-    <div class="card">
-      <div class="photo-zone" onclick="document.getElementById('photo-input').click()">
-        <i class="ti ti-camera-plus"></i>
-        <span style="font-size:14px">Tap to take photo</span>
-        <span style="font-size:12px;color:var(--txt2)">Stored locally on device</span>
-      </div>
-      <div class="photo-strip" id="photo-strip">
-        ${(dd.photos||[]).slice(-5).map(src=>`<img class="photo-thumb" src="${src}" onclick="showPhoto('${src}')"/>`).join('')}
-      </div>
-    </div>`;
+  </div>
+  <div class="pbar-wrap" style="height:4px;margin-bottom:8px"><div class="pbar-fill" style="width:${totalPct}%"></div></div>
+  <div style="display:flex;justify-content:space-between;margin-bottom:18px">
+    <span class="lbl" style="color:var(--txt3)">${done} / ${TASKS.length} Complete</span>
+    <span class="lbl" style="color:var(--txt3)">${daysLeft()} Days Left</span>
+  </div>
+  ${taskCards}
+  <button class="fail-link" onclick="confirmReset()">
+    <i class="ti ti-rotate" style="font-size:12px"></i>I Failed — Reset to Day 1
+  </button>`;
 };
 
-/* ═══════════════════════════════════════════ PROGRESS ══════════════════════════ */
+/* ── PROGRESS ── */
 render.progress=function(){
-  const dn=dayNum(),str=streak(),remain=75-dn;
-  const pctDone=Math.round(dn/75*100);
-  const R=38,C=2*Math.PI*R,pctR=dn/75;
+  const dn=dayNum(),str=streak(),keys=Object.keys(S.days).sort();
+  const totalDays=keys.length;
+  const perfDays=keys.filter(k=>{const dd=S.days[k];return dd&&allDone(dd);}).length;
+  const donePct=Math.round(dn/75*100);
+  const consistPct=totalDays>0?Math.round(perfDays/totalDays*100):0;
 
-  const cells=[];
+  // Wall cells (75, 8 cols → 10 rows with 3 leftover)
+  let wallHtml='';
   for(let i=1;i<=75;i++){
-    let cls='ahead',label=i;
-    if(i<dn){
-      const d=new Date(S.startDate);d.setDate(d.getDate()+i-1);
-      const k=d.toISOString().slice(0,10);
-      cls=S.days[k]&&allDone(S.days[k])?'done':'ahead';
-    } else if(i===dn){cls='today';}
-    cells.push(`<div class="wall-cell ${cls}">${label}</div>`);
+    let cls='wall-cell ';
+    if(!S.startDate){cls+='future';wallHtml+=`<div class="${cls}"></div>`;continue;}
+    const d=new Date(S.startDate);d.setDate(d.getDate()+i-1);
+    const k=d.toISOString().slice(0,10);
+    if(i===dn) cls+='today';
+    else if(i<dn){const dd=S.days[k];cls+=dd&&allDone(dd)?'done':'missed';}
+    else cls+='future';
+    wallHtml+=`<div class="${cls}">${i<=dn?i:''}</div>`;
   }
 
-  document.getElementById('progress-content').innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-      <div>
-        <p style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--p-muted);margin-bottom:2px">75 HARD CHALLENGE</p>
-        <h1 style="font-size:36px;font-weight:800;letter-spacing:-1px;color:var(--p-lime)">PROGRESS</h1>
-      </div>
-      <div style="text-align:right">
-        <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;font-size:22px;font-weight:800;color:var(--lime)">
-          <i class="ti ti-flame" style="font-size:18px;color:var(--red)"></i>${str}
-        </div>
-        <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--p-muted)">STREAK</div>
-      </div>
-    </div>
+  // Aggregates
+  const totalW=keys.reduce((a,k)=>{const dd=S.days[k];return a+(dd?.tasks?.w1?1:0)+(dd?.tasks?.w2?1:0);},0);
+  const totalWater=keys.reduce((a,k)=>a+(S.days[k]?.water||0),0);
+  const totalPages=keys.reduce((a,k)=>a+(S.days[k]?.pages||0),0);
 
-    <div class="prog-hero">
-      <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--p-muted);margin-bottom:6px">TIME REMAINING</div>
-      <div style="display:flex;align-items:flex-end;gap:14px;margin-bottom:12px">
-        <div>
-          <div class="prog-big">${remain}</div>
-          <div style="font-size:18px;font-weight:700;color:var(--txt);line-height:1.1">DAYS<br><span style="color:var(--p-muted)">TO GO</span></div>
-        </div>
-        <div style="margin-left:auto;background:var(--p-mid);border-radius:var(--r2);padding:12px 16px;text-align:center;min-width:70px">
-          <div style="font-size:22px;font-weight:800;color:var(--p-lime)">${pctDone}%</div>
-          <div style="font-size:11px;color:var(--p-muted);font-weight:600;letter-spacing:0.5px">DONE</div>
-        </div>
-      </div>
-      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${pctDone}%;background:var(--p-teal)"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:6px">
-        <span style="color:var(--p-muted)">Day ${dn} of 75</span>
-        <span style="color:var(--p-teal);font-weight:600">On Track</span>
-      </div>
-    </div>
+  // Task rates
+  const taskRates=TASKS.map(t=>{
+    const done=keys.filter(k=>{const dd=S.days[k];return dd&&taskDone(dd,t);}).length;
+    return{...t,done,pct:totalDays>0?Math.round(done/totalDays*100):0};
+  });
 
-    <div class="prog-stat-row">
-      <div class="prog-stat active-stat">
-        <div class="prog-num">${dn}</div>
-        <div class="prog-lbl">Days In</div>
-      </div>
-      <div class="prog-stat">
-        <div style="display:flex;align-items:center;gap:4px;justify-content:center;font-size:22px;font-weight:800;color:var(--red);line-height:1;margin-bottom:4px">
-          <i class="ti ti-flame" style="font-size:18px"></i>${str}
-        </div>
-        <div class="prog-lbl">Streak</div>
-      </div>
-      <div class="prog-stat">
-        <div class="prog-num" style="color:var(--p-muted)">${remain}</div>
-        <div class="prog-lbl">Remain</div>
-      </div>
-    </div>
-
-    <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
-      <div style="font-size:12px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--p-muted)">WALL OF DISCIPLINE</div>
-      <div style="display:flex;gap:10px;font-size:11px;font-weight:600;color:var(--p-muted)">
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:var(--p-lime);display:inline-block"></span>Done</span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;border:1.5px solid var(--p-lime);display:inline-block"></span>Today</span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:var(--p-mid);display:inline-block"></span>Ahead</span>
-      </div>
-    </div>
-    <div style="background:var(--p-card);border:1px solid rgba(199,255,51,0.08);border-radius:var(--r);padding:14px">
-      <div class="wall-grid">${cells.join('')}</div>
-    </div>`;
-};
-
-/* ═══════════════════════════════════════════ JOURNAL ════════════════════════════ */
-render.log=function(){
-  const dd=todayData(),dn=dayNum();
-  const moodDefs=[
-    {icon:'ti-mood-sad-2',label:'Terrible'},{icon:'ti-mood-sad',label:'Bad'},
-    {icon:'ti-mood-neutral',label:'Okay'},{icon:'ti-mood-smile',label:'Good'},
-    {icon:'ti-mood-crazy-happy',label:'Amazing'},
-  ];
-  const energyDefs=[
-    {icon:'ti-battery-1',label:'Drained'},{icon:'ti-battery-2',label:'Low'},
-    {icon:'ti-battery-3',label:'Okay'},{icon:'ti-battery-4',label:'High'},
-    {icon:'ti-bolt',label:'Peak'},
-  ];
-  document.getElementById('log-content').innerHTML=`
-    <h2 style="margin-bottom:4px">Day ${dn} Journal</h2>
-    <p class="smuted" style="margin-bottom:16px">${new Date().toLocaleDateString('en-IN',{weekday:'long',month:'long',day:'numeric'})}</p>
-
-    <div class="section-head"><i class="ti ti-mood-smile"></i>Mood</div>
-    <div class="mood-row" style="margin-bottom:16px">
-      ${moodDefs.map((m,i)=>`<button class="mood-btn ${dd.mood===i+1?'active':''}" onclick="setMood(${i+1})"><i class="ti ${m.icon}"></i>${m.label}</button>`).join('')}
-    </div>
-
-    <div class="section-head"><i class="ti ti-bolt"></i>Energy Level</div>
-    <div class="mood-row" style="margin-bottom:16px">
-      ${energyDefs.map((e,i)=>`<button class="mood-btn ${dd.energy===i+1?'active':''}" onclick="setEnergy(${i+1})"><i class="ti ${e.icon}"></i>${e.label}</button>`).join('')}
-    </div>
-
-    <div class="section-head"><i class="ti ti-trophy"></i>Today's Wins</div>
-    <textarea class="journal-textarea" rows="3" id="wins-ta" placeholder="What went well today?" oninput="saveJournal()">${dd.wins||''}</textarea>
-
-    <div class="section-head" style="margin-top:12px"><i class="ti ti-brain"></i>Struggles &amp; Lessons</div>
-    <textarea class="journal-textarea" rows="3" id="struggles-ta" placeholder="What was hard? What did you learn?" oninput="saveJournal()" style="margin-top:4px">${dd.struggles||''}</textarea>
-
-    <div class="section-head" style="margin-top:12px"><i class="ti ti-notes"></i>Notes</div>
-    <textarea class="journal-textarea" rows="4" id="journal-ta" placeholder="Anything else on your mind..." oninput="saveJournal()" style="margin-top:4px">${dd.journal||''}</textarea>
-
-    <button class="btn btn-primary" style="margin-top:16px" onclick="saveJournal();showToast('Journal saved')"><i class="ti ti-device-floppy"></i>Save Journal</button>
-
-    <div class="section-head" style="margin-top:20px"><i class="ti ti-history"></i>Past Entries</div>
-    ${Object.keys(S.days).filter(k=>S.days[k].journal||S.days[k].wins).sort().reverse().slice(0,5).map(k=>{
-      const d=S.days[k],dn2=S.startDate?Math.floor((new Date(k)-new Date(S.startDate))/86400000)+1:1;
-      return `<div class="card" style="cursor:pointer" onclick="showEntry('${k}')">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div style="font-size:13px;font-weight:600">Day ${dn2}</div><div class="smuted">${k}</div></div>
-          <div style="display:flex;gap:6px">
-            ${d.mood?`<i class="ti ti-mood-smile" style="font-size:16px;color:var(--green)"></i>`:''}
-            ${d.energy?`<i class="ti ti-bolt" style="font-size:16px;color:var(--lime)"></i>`:''}
+  // Phase milestones
+  const phasesHtml=PHASES.map(p=>{
+    const isDone=dn>p.end,isActive=dn>=p.start&&dn<=p.end;
+    const dotCls=isDone?'done':isActive?'active':'locked';
+    const badge=isDone?`<span class="pill pill-neon" style="font-size:9px;padding:2px 7px">COMPLETE</span>`:
+                isActive?`<span class="pill" style="font-size:9px;padding:2px 7px;background:var(--amberbg);color:var(--amber);border-color:rgba(232,130,12,0.4)">IN PROGRESS</span>`:
+                `<span class="pill pill-dim" style="font-size:9px;padding:2px 7px">LOCKED</span>`;
+    return `<div class="phase-item">
+      <div class="phase-dot ${dotCls}" style="margin-top:6px"></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:10px;font-weight:800;letter-spacing:1px;color:var(--txt3);text-transform:uppercase">Phase ${p.n}</span>
+            ${badge}
           </div>
+          <span class="lbl">Days ${p.days}</span>
         </div>
-        ${d.wins?`<div style="font-size:12px;color:var(--txt2);margin-top:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.wins}</div>`:''}
-      </div>`;
-    }).join('')}`;
-};
-
-/* ═══════════════════════════════════════════ SETTINGS ══════════════════════════ */
-render.settings=function(){
-  const cs=S.consequences;
-  document.getElementById('settings-content').innerHTML=`
-    <h2 style="margin-bottom:16px">Settings</h2>
-
-    <div class="section-head"><i class="ti ti-user"></i>Profile</div>
-    <div class="card">
-      <div style="margin-bottom:12px"><label class="smuted">Name</label>
-        <input class="input" style="margin-top:6px" value="${S.settings.name||''}" oninput="S.settings.name=this.value;save()"/></div>
-      <div><label class="smuted">Start Date</label>
-        <input class="input" type="date" style="margin-top:6px" value="${S.startDate||''}" oninput="S.startDate=this.value;save()"/></div>
-    </div>
-
-    <div class="section-head" style="margin-top:4px"><i class="ti ti-alert-triangle" style="color:var(--red)"></i>Failure Consequences</div>
-    <div class="fail-card">
-      <p style="font-size:13px;color:var(--txt2);margin-bottom:12px;line-height:1.5">If you miss a task and restart, you commit to these consequences.</p>
-      ${cs.map((c,i)=>`
-        <div class="consequence-item">
-          <i class="ti ${c.icon}"></i>
-          <span style="flex:1;font-size:13px;color:var(--txt2)">${c.text}</span>
-          <button onclick="editConsequence(${i})" style="background:none;border:none;color:var(--txt2);cursor:pointer"><i class="ti ti-edit" style="font-size:16px"></i></button>
-        </div>`).join('')}
-      <button class="btn btn-outline" style="margin-top:12px;font-size:13px" onclick="addConsequence()"><i class="ti ti-plus"></i>Add Consequence</button>
-    </div>
-
-    <div class="section-head"><i class="ti ti-brand-telegram" style="color:#2AABEE"></i>Telegram Reminders</div>
-    <div class="card">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="width:40px;height:40px;border-radius:12px;background:rgba(42,171,238,0.15);border:1px solid rgba(42,171,238,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <i class="ti ti-brand-telegram" style="font-size:22px;color:#2AABEE"></i>
-        </div>
-        <div>
-          <div style="font-size:14px;font-weight:600">@my75hard_bot</div>
-          <div class="smuted">4 daily reminders — 7am, 12pm, 6pm, 9pm</div>
-        </div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:2px">${p.name}</div>
+        <div style="font-size:12px;color:var(--txt2)">${p.desc}</div>
+        ${isActive?`<div style="font-size:11px;color:var(--txt3);margin-top:3px">${p.end-dn+1} days remaining in phase</div>`:''}
       </div>
-      <div style="background:var(--bg3);border-radius:var(--r2);padding:14px;margin-bottom:14px">
-        <div class="smuted" style="margin-bottom:10px;font-weight:600;letter-spacing:0.5px">HOW TO CONNECT</div>
-        ${[
-          ['1','Open Telegram and search <span style="color:var(--lime);font-weight:600">@my75hard_bot</span>'],
-          ['2','Send this message to the bot:'],
-        ].map(([n,t])=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
-          <div style="width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
-          <div style="font-size:13px;color:var(--txt2)">${t}</div>
-        </div>`).join('')}
-        <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 12px;margin:0 0 8px 30px;display:flex;align-items:center;gap:8px">
-          <code style="font-size:12px;color:var(--lime);flex:1;word-break:break-all">/start ${getToken()}</code>
-          <button onclick="copyStartCmd()" style="background:none;border:none;color:var(--txt2);cursor:pointer;flex-shrink:0"><i class="ti ti-copy" style="font-size:16px"></i></button>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:10px">
-          <div style="width:20px;height:20px;border-radius:50%;background:var(--green);color:var(--bg);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">✓</div>
-          <div style="font-size:13px;color:var(--txt2)">Done! Reminders start immediately.</div>
-        </div>
-      </div>
-      <a href="https://t.me/my75hard_bot" target="_blank" class="btn btn-primary" style="text-decoration:none;display:flex">
-        <i class="ti ti-brand-telegram"></i>Open @my75hard_bot
-      </a>
-    </div>
-
-    <div class="section-head"><i class="ti ti-alert-circle" style="color:var(--red)"></i>Danger Zone</div>
-    <div class="card">
-      <button class="btn btn-danger" onclick="confirmReset()"><i class="ti ti-refresh"></i>Restart Challenge (Day 1)</button>
-      <button class="btn btn-outline" style="margin-top:8px;color:var(--red);border-color:rgba(202,119,50,0.3)" onclick="confirmWipe()"><i class="ti ti-trash"></i>Erase All Data</button>
     </div>`;
+  }).join('');
+
+  document.getElementById('progress-content').innerHTML=`
+  <div class="lbl" style="margin-bottom:6px">75 Hard Challenge</div>
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
+    <div style="font-size:44px;font-weight:900;line-height:1;letter-spacing:-1px">PROGRESS</div>
+    <div style="text-align:right;padding-top:4px">
+      <div style="font-size:28px;font-weight:900;color:var(--neon);display:flex;align-items:center;gap:4px;justify-content:flex-end">
+        <span style="font-size:22px">🔥</span>${str}
+      </div>
+      <div class="lbl" style="color:var(--txt3)">Streak</div>
+    </div>
+  </div>
+
+  <!-- TIME REMAINING HERO -->
+  <div style="background:var(--bg3);border:1px solid var(--neonborderlo);border-radius:var(--r);padding:18px;margin-bottom:10px">
+    <div class="lbl" style="margin-bottom:10px">Time Remaining</div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <span style="font-size:64px;font-weight:900;color:var(--neon);line-height:1">${daysLeft()}</span>
+        <div>
+          <div style="font-size:18px;font-weight:800;color:var(--txt);text-transform:uppercase">Days</div>
+          <div style="font-size:14px;font-weight:700;color:var(--txt3);text-transform:uppercase">To Go</div>
+        </div>
+      </div>
+      <div style="background:var(--bg4);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:26px;font-weight:900;color:var(--neon);line-height:1">${donePct}%</div>
+        <div class="lbl" style="margin-top:3px">Done</div>
+      </div>
+    </div>
+    <div style="background:var(--bg5);border-radius:99px;height:5px;overflow:hidden;margin-bottom:8px">
+      <div style="height:100%;border-radius:99px;background:linear-gradient(90deg,var(--neon2),var(--neon));width:${donePct}%;transition:width .4s ease"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:12px;color:var(--txt3);font-weight:600">Day ${dn} of 75</span>
+      <span style="font-size:12px;font-weight:800;color:var(--neon)">On Track</span>
+    </div>
+  </div>
+
+  <!-- 3 STATS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+    <div class="stat-box active">
+      <div class="stat-num" style="color:var(--neon)">${dn}</div>
+      <div class="stat-lbl">Days In</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" style="display:flex;align-items:center;justify-content:center;gap:3px"><span style="font-size:20px">🔥</span>${str}</div>
+      <div class="stat-lbl">Streak</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" style="color:var(--txt2)">${daysLeft()}</div>
+      <div class="stat-lbl">Remain</div>
+    </div>
+  </div>
+
+  <!-- WALL OF DISCIPLINE -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
+    <div class="lbl" style="font-size:11px;letter-spacing:2px">Wall of Discipline</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:var(--neon)"></div><span style="font-size:9px;color:var(--txt3)">Done</span></div>
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;border:2px solid var(--neon)"></div><span style="font-size:9px;color:var(--txt3)">Today</span></div>
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:var(--bg5);border:1px solid var(--border2)"></div><span style="font-size:9px;color:var(--txt3)">Ahead</span></div>
+    </div>
+  </div>
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+    <div class="wall-grid">${wallHtml}</div>
+  </div>
+
+  <!-- LIFETIME AGGREGATES -->
+  <div class="sec"><i class="ti ti-bolt"></i>Lifetime Aggregates</div>
+  <div class="agg-grid">
+    <div class="agg-box">
+      <div class="agg-icon">⚡ Total Sweat</div>
+      <div class="agg-num">${totalW}</div>
+      <div class="agg-total">of ${dn*2} Workouts</div>
+      <div class="pbar-wrap"><div class="pbar-fill" style="width:${dn>0?Math.min(totalW/(dn*2)*100,100):0}%"></div></div>
+    </div>
+    <div class="agg-box">
+      <div class="agg-icon">💧 Hydration</div>
+      <div class="agg-num">${(totalWater/1000).toFixed(0)}</div>
+      <div class="agg-total">of ${dn*4} Litres</div>
+      <div class="pbar-wrap"><div class="pbar-fill" style="width:${dn>0?Math.min(totalWater/(dn*4000)*100,100):0}%;background:#38bdf8"></div></div>
+    </div>
+    <div class="agg-box">
+      <div class="agg-icon">📚 Knowledge</div>
+      <div class="agg-num">${totalPages}</div>
+      <div class="agg-total">of ${dn*10} Pages</div>
+      <div class="pbar-wrap"><div class="pbar-fill" style="width:${dn>0?Math.min(totalPages/(dn*10)*100,100):0}%"></div></div>
+    </div>
+    <div class="agg-box">
+      <div class="agg-icon">⚡ Consistency</div>
+      <div class="agg-num">${consistPct}%</div>
+      <div class="agg-total">Task Rate</div>
+      <div class="pbar-wrap"><div class="pbar-fill" style="width:${consistPct}%;background:var(--amber)"></div></div>
+    </div>
+  </div>
+
+  <!-- TASK RATES -->
+  <div class="sec"><i class="ti ti-list-check"></i>Task Completion Rate</div>
+  <div class="card">
+    ${taskRates.map(t=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;last-child:margin-bottom:0">
+      <i class="ti ${t.icon}" style="font-size:13px;color:${t.color};width:16px;flex-shrink:0"></i>
+      <span style="font-size:11px;font-weight:800;flex:1;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.name}</span>
+      <div style="background:var(--bg5);border-radius:99px;height:4px;overflow:hidden;flex:2"><div style="height:100%;border-radius:99px;background:${t.color};width:${t.pct}%;transition:width .4s"></div></div>
+      <span style="font-size:10px;color:var(--txt3);font-weight:800;min-width:34px;text-align:right">${t.done}/${totalDays}</span>
+    </div>`).join('')}
+  </div>
+
+  <!-- PHASE MILESTONES -->
+  <div class="sec"><i class="ti ti-flag"></i>Phase Milestones</div>
+  <div class="card">${phasesHtml}</div>
+
+  <div style="background:var(--bg3);border:1px solid var(--neonborderlo);border-radius:var(--r);padding:16px;margin-top:10px;text-align:center">
+    <div style="font-size:13px;font-weight:900;letter-spacing:1.5px;color:var(--neon);margin-bottom:4px;text-transform:uppercase">Stay Hard.</div>
+    <div style="font-size:12px;color:var(--txt2)">${daysLeft()} days of discipline between you and who you could be.</div>
+  </div>`;
 };
 
-/* ═══════════════════════════════════════════ HELPERS ═══════════════════════════ */
+/* ── STATS ── */
+render.stats=function(){
+  const dn=dayNum(),str=streak(),keys=Object.keys(S.days).sort();
+  const totalDays=keys.length;
+  const perfDays=keys.filter(k=>{const dd=S.days[k];return dd&&allDone(dd);}).length;
+  const compRate=totalDays>0?Math.round(perfDays/totalDays*100):0;
+  const bars=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=d.toISOString().slice(0,10);
+    const dd=S.days[k]||{tasks:{},water:0,pages:0,photos:[]};
+    bars.push({k,pct:Math.round(countDone(dd)/TASKS.length*100),today:i===0});
+  }
+  const maxPct=Math.max(...bars.map(b=>b.pct),1);
+  const badges=[
+    {day:1,name:'Started',icon:'ti-rocket'},
+    {day:7,name:'1 Week',icon:'ti-star'},
+    {day:14,name:'2 Weeks',icon:'ti-diamond'},
+    {day:21,name:'21 Days',icon:'ti-shield'},
+    {day:30,name:'1 Month',icon:'ti-crown'},
+    {day:50,name:'50 Days',icon:'ti-sword'},
+    {day:75,name:'Finished',icon:'ti-trophy'},
+  ];
+  document.getElementById('stats-content').innerHTML=`
+  <div style="font-size:36px;font-weight:900;letter-spacing:-0.5px;margin-bottom:16px">STATS</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+    <div class="stat-box"><div class="stat-num" style="color:var(--neon)">${dn}<span style="font-size:16px;color:var(--txt3)">/75</span></div><div class="stat-lbl">Day</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--amber)">${str}</div><div class="stat-lbl">Streak</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--neon2)">${compRate}%</div><div class="stat-lbl">Completion</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--txt2)">${perfDays}</div><div class="stat-lbl">Perfect Days</div></div>
+  </div>
+  <div class="sec"><i class="ti ti-calendar-week"></i>Last 7 Days</div>
+  <div class="card">
+    <div style="display:flex;align-items:flex-end;gap:5px;height:90px">
+      ${bars.map(b=>`
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <div style="font-size:9px;color:var(--txt3);font-weight:700">${b.pct}%</div>
+        <div style="flex:1;width:100%;display:flex;align-items:flex-end">
+          <div style="width:100%;height:${Math.max(b.pct/maxPct*60,3)}px;background:${b.today?'var(--neon)':'var(--bg5)'};border-radius:3px 3px 0 0;transition:height .4s;border:${b.today?'none':'1px solid var(--border2)'}"></div>
+        </div>
+        <div style="font-size:9px;color:${b.today?'var(--neon)':'var(--txt3)'};font-weight:800">${new Date(b.k).toLocaleDateString('en',{weekday:'short'}).slice(0,1)}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="sec"><i class="ti ti-award"></i>Milestones</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    ${badges.map(b=>`
+    <div class="badge ${dn>=b.day?'unlocked':''}">
+      <div class="badge-icon"><i class="ti ${b.icon}"></i></div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-day">Day ${b.day}</div>
+    </div>`).join('')}
+  </div>`;
+};
+
+/* ── PHOTOS ── */
+render.photos=function(){
+  const allPhotos=[];
+  Object.keys(S.days).sort().reverse().forEach(k=>{
+    const dd=S.days[k];
+    const dn2=S.startDate?Math.floor((new Date(k)-new Date(S.startDate))/86400000)+1:1;
+    (dd?.photos||[]).forEach(src=>allPhotos.push({src,k,dn2}));
+  });
+  document.getElementById('photos-content').innerHTML=`
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div style="font-size:32px;font-weight:900">PHOTOS</div>
+    <button class="btn btn-primary" style="width:auto;padding:10px 16px;font-size:12px" onclick="document.getElementById('photo-input').click()"><i class="ti ti-camera-plus"></i>Add</button>
+  </div>
+  ${allPhotos.length===0?`<div style="text-align:center;padding:60px 20px"><i class="ti ti-camera" style="font-size:48px;color:var(--txt3);display:block;margin-bottom:12px"></i><div style="font-size:14px;color:var(--txt2)">No photos yet.</div><div style="font-size:12px;color:var(--txt3);margin-top:4px">Take daily progress photos to track your transformation.</div></div>`:
+  `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    ${allPhotos.map(p=>`
+    <div style="position:relative;cursor:pointer" onclick="showPhoto('${p.src}','${p.k}',${p.dn2})">
+      <img src="${p.src}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--r);border:1px solid var(--border)"/>
+      <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));border-radius:0 0 var(--r) var(--r);padding:8px 10px">
+        <div style="font-size:11px;font-weight:900;color:var(--neon)">DAY ${p.dn2}</div>
+        <div style="font-size:9px;color:rgba(255,255,255,0.5)">${p.k}</div>
+      </div>
+    </div>`).join('')}
+  </div>`}`;
+};
+
+/* ── SETTINGS ── */
+render.settings=function(){
+  document.getElementById('settings-content').innerHTML=`
+  <div style="font-size:32px;font-weight:900;margin-bottom:16px">SETTINGS</div>
+  <div class="sec" style="margin-top:0">Profile</div>
+  <div class="card">
+    <div style="margin-bottom:12px"><div class="lbl" style="margin-bottom:6px">Name</div>
+    <input class="input" value="${S.settings.name||''}" oninput="S.settings.name=this.value;save()"/></div>
+    <div><div class="lbl" style="margin-bottom:6px">Start Date</div>
+    <input class="input" type="date" value="${S.startDate||''}" oninput="S.startDate=this.value;save()"/></div>
+  </div>
+  <div class="sec">Failure Consequences</div>
+  <div style="background:var(--redbg);border:1px solid var(--redborder);border-radius:var(--r);padding:16px;margin-bottom:10px">
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:12px;line-height:1.6">If you fail, these apply. The psychological cost drives adherence.</div>
+    ${S.consequences.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,64,64,0.1)">
+      <i class="ti ${c.icon}" style="font-size:17px;color:var(--red);flex-shrink:0"></i>
+      <span style="flex:1;font-size:13px;color:var(--txt2)">${c.text}</span>
+      <button onclick="editConsequence(${i})" style="background:none;border:none;color:var(--txt3);cursor:pointer"><i class="ti ti-edit" style="font-size:16px"></i></button>
+    </div>`).join('')}
+    <button class="btn btn-outline" style="margin-top:12px;font-size:11px;border-color:var(--redborder);color:var(--red)" onclick="addConsequence()"><i class="ti ti-plus"></i>Add Consequence</button>
+  </div>
+  <div class="sec"><i class="ti ti-brand-telegram" style="color:#2AABEE"></i>Telegram Reminders</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div style="width:40px;height:40px;border-radius:12px;background:rgba(42,171,238,0.12);border:1px solid rgba(42,171,238,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="ti ti-brand-telegram" style="font-size:22px;color:#2AABEE"></i>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:800">@my75hard_bot</div>
+        <div style="font-size:11px;color:var(--txt3)">4 daily reminders — 7am, 12pm, 6pm, 9pm</div>
+      </div>
+    </div>
+    <div style="background:var(--bg4);border-radius:var(--r2);padding:14px;margin-bottom:14px">
+      <div class="lbl" style="margin-bottom:10px">How to Connect</div>
+      ${[['1','Search Telegram for <span style="color:var(--neon);font-weight:800">@my75hard_bot</span>'],
+         ['2','Send this command to the bot:'],
+         ['✓','Done! Reminders start immediately.']].map(([n,t],i)=>`
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:${i<2?'10px':'0'}">
+        <div style="width:20px;height:20px;border-radius:50%;background:${n==='✓'?'var(--neon)':'var(--bg5)'};border:${n==='✓'?'none':'1px solid var(--border2)'};color:${n==='✓'?'var(--bg)':'var(--txt2)'};font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
+        <div style="font-size:12px;color:var(--txt2)">${t}</div>
+      </div>
+      ${i===1?`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 12px;margin:8px 0 0 30px;display:flex;align-items:center;gap:8px">
+        <code style="font-size:11px;color:var(--neon);flex:1;word-break:break-all">/start ${getToken()}</code>
+        <button onclick="copyCmd()" style="background:none;border:none;color:var(--txt3);cursor:pointer;padding:2px"><i class="ti ti-copy" style="font-size:15px"></i></button>
+      </div>`:''}
+      `).join('')}
+    </div>
+    <a href="https://t.me/my75hard_bot" target="_blank" class="btn btn-primary" style="text-decoration:none;display:flex;background:rgba(42,171,238,0.15);color:#2AABEE;border:1px solid rgba(42,171,238,0.35)">
+      <i class="ti ti-brand-telegram"></i>Open @my75hard_bot
+    </a>
+    <div style="background:var(--bg4);border-radius:var(--r2);padding:12px;margin-top:10px">
+      <div class="lbl" style="margin-bottom:8px">Reminder Schedule (IST)</div>
+      ${[['07:00','Morning check-in','ti-sun'],['12:00','Water check-in','ti-droplet'],['18:00','Outdoor workout check','ti-sun-2'],['21:00','Evening wrap-up','ti-checklist']].map(([t,m,ic])=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
+        <i class="ti ${ic}" style="font-size:13px;color:var(--txt3);width:16px"></i>
+        <span style="color:#2AABEE;min-width:44px;font-weight:800">${t}</span>
+        <span style="color:var(--txt2)">${m}</span>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="sec" style="color:var(--red)">Danger Zone</div>
+  <div class="card">
+    <button class="btn btn-danger" style="margin-bottom:8px" onclick="confirmReset()"><i class="ti ti-refresh"></i>Restart Challenge</button>
+    <button class="btn btn-outline" style="color:var(--red);border-color:var(--redborder)" onclick="confirmWipe()"><i class="ti ti-trash"></i>Erase All Data</button>
+  </div>`;
+};
+
+/* ── ACTIONS ── */
 function startChallenge(){
   const name=document.getElementById('uname')?.value||'Warrior';
   const sdate=document.getElementById('sdate')?.value||today();
-  S.settings.name=name; S.startDate=sdate; save(); render.home();
+  S.settings.name=name;S.startDate=sdate;save();render.today();
 }
-
 function toggleTask(id){
-  const dd=todayData();
-  if(dd.tasks[id]){delete dd.tasks[id];}
-  else{dd.tasks[id]=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});}
+  const dd=td();
+  const t=TASKS.find(x=>x.id===id);
+  if(t?.isWater){openWaterModal();return;}
+  if(t?.isPhoto){document.getElementById('photo-input').click();return;}
+  if(dd.tasks[id])delete dd.tasks[id];
+  else dd.tasks[id]=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
   save();
   const el=document.getElementById('task-'+id);
-  if(el){el.classList.add('pop');setTimeout(()=>el.classList.remove('pop'),300);}
-  if(curPage==='tasks')render.tasks();else if(curPage==='home')render.home();
+  if(el){el.classList.add('pop');setTimeout(()=>el.classList.remove('pop'),220);}
+  render.today();
 }
-
 function toggleOutdoor(id){
-  const dd=todayData();
-  if(id==='w2') dd.outdoor_w2=!dd.outdoor_w2;
-  save(); render.tasks();
+  const dd=td();
+  if(id==='w1')dd.outdoor_w1=!dd.outdoor_w1;
+  save();render.today();
 }
-
-function addWater(ml){
-  const dd=todayData(); dd.water=Math.min((dd.water||0)+ml,5000);
-  if(dd.water>=3800&&!dd.tasks['water']){dd.tasks['water']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});showToast('Water goal reached 💧');}
-  save(); render.tasks();
+function openWaterModal(){
+  const dd=td();
+  const update=()=>{
+    const wl=(dd.water/1000).toFixed(1);const pct=Math.min(dd.water/4000*100,100);
+    const nb=document.getElementById('wb');const np=document.getElementById('wp');
+    if(nb)nb.textContent=wl+'L';if(np)np.style.width=pct+'%';
+  };
+  openModal(`
+  <div style="font-size:18px;font-weight:900;margin-bottom:4px;text-transform:uppercase">Water Intake</div>
+  <div style="font-size:12px;color:var(--txt2);margin-bottom:16px">Target: 4 litres per day</div>
+  <div style="text-align:center;padding:10px 0 16px">
+    <div id="wb" style="font-size:48px;font-weight:900;color:#38bdf8">${(dd.water/1000).toFixed(1)}L</div>
+    <div style="font-size:11px;color:var(--txt3);margin-bottom:10px">of 4L goal</div>
+    <div style="background:var(--bg5);border-radius:99px;height:6px;overflow:hidden">
+      <div id="wp" style="height:100%;border-radius:99px;background:#38bdf8;width:${Math.min(dd.water/4000*100,100)}%;transition:width .3s"></div>
+    </div>
+  </div>
+  <div class="quick-btns" style="margin-bottom:8px">
+    ${[200,300,500,750].map(ml=>`<button class="qbtn" onclick="addWaterM(${ml})">${ml}ml</button>`).join('')}
+  </div>
+  <button class="qbtn" style="width:100%;color:var(--red);border-color:var(--redborder);margin-bottom:12px" onclick="resetWaterM()">Reset to 0</button>
+  <button class="btn btn-primary" onclick="forceClose()">Done</button>`);
 }
-function resetWater(){const dd=todayData();dd.water=0;delete dd.tasks['water'];save();render.tasks();}
-
-function addPages(n){
-  const dd=todayData(); dd.pages=Math.min((dd.pages||0)+n,999);
-  if(dd.pages>=10&&!dd.tasks['read']){dd.tasks['read']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});showToast('Reading goal reached 📖');}
-  save(); render.tasks();
+function addWaterM(ml){
+  const dd=td();dd.water=Math.min((dd.water||0)+ml,6000);
+  if(dd.water>=4000&&!dd.tasks['water'])dd.tasks['water']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+  save();
+  const wb=document.getElementById('wb'),wp=document.getElementById('wp');
+  if(wb)wb.textContent=(dd.water/1000).toFixed(1)+'L';
+  if(wp)wp.style.width=Math.min(dd.water/4000*100,100)+'%';
+  if(curPage==='today')render.today();
 }
-function setPages(n){const dd=todayData();dd.pages=n;if(n<10)delete dd.tasks['read'];save();render.tasks();}
-
-function setMood(n){todayData().mood=n;save();render.log();}
-function setEnergy(n){todayData().energy=n;save();render.log();}
-
-function saveJournal(){
-  const dd=todayData();
-  const jta=document.getElementById('journal-ta'),wta=document.getElementById('wins-ta'),sta=document.getElementById('struggles-ta');
-  if(jta)dd.journal=jta.value; if(wta)dd.wins=wta.value; if(sta)dd.struggles=sta.value; save();
-}
-
+function resetWaterM(){const dd=td();dd.water=0;delete dd.tasks['water'];save();forceClose();render.today();}
 function handlePhoto(e){
-  const file=e.target.files[0]; if(!file)return;
+  const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=ev=>{
-    const dd=todayData(); if(!dd.photos)dd.photos=[];
-    dd.photos.push(ev.target.result);
-    if(!dd.tasks['photo']){dd.tasks['photo']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});showToast('Progress photo saved');}
-    save(); if(curPage==='tasks')render.tasks();
+    const dd=td();dd.photos.push(ev.target.result);
+    if(!dd.tasks['photo'])dd.tasks['photo']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+    save();showToast('Photo saved');
+    if(curPage==='today')render.today();else if(curPage==='photos')render.photos();
   };
-  reader.readAsDataURL(file); e.target.value='';
+  reader.readAsDataURL(file);e.target.value='';
 }
-
-function showPhoto(src){
+function showPhoto(src,k,dn2){
   openModal(`<div style="text-align:center">
-    <h3 style="margin-bottom:12px">Progress Photo</h3>
-    <img src="${src}" style="width:100%;border-radius:var(--r);max-height:60dvh;object-fit:contain"/>
+    <div style="font-size:11px;font-weight:900;color:var(--neon);margin-bottom:8px;letter-spacing:1px">DAY ${dn2} · ${k}</div>
+    <img src="${src}" style="width:100%;border-radius:var(--r);max-height:65dvh;object-fit:contain"/>
     <button class="btn btn-outline" style="margin-top:12px" onclick="forceClose()">Close</button>
   </div>`);
 }
-
-function showEntry(k){
-  const d=S.days[k],dn2=S.startDate?Math.floor((new Date(k)-new Date(S.startDate))/86400000)+1:1;
-  openModal(`
-    <h3>Day ${dn2} — ${k}</h3>
-    <div style="display:flex;gap:8px;margin:10px 0">
-      ${d.mood?`<span class="chip green"><i class="ti ti-mood-smile"></i>Mood ${d.mood}/5</span>`:''}
-      ${d.energy?`<span class="chip blue"><i class="ti ti-bolt"></i>Energy ${d.energy}/5</span>`:''}
-    </div>
-    ${d.wins?`<div class="section-head"><i class="ti ti-trophy"></i>Wins</div><p style="font-size:14px;color:var(--txt2);line-height:1.5">${d.wins}</p>`:''}
-    ${d.struggles?`<div class="section-head" style="margin-top:10px"><i class="ti ti-brain"></i>Struggles</div><p style="font-size:14px;color:var(--txt2);line-height:1.5">${d.struggles}</p>`:''}
-    ${d.journal?`<div class="section-head" style="margin-top:10px"><i class="ti ti-notes"></i>Notes</div><p style="font-size:14px;color:var(--txt2);line-height:1.5">${d.journal}</p>`:''}
-    <button class="btn btn-outline" style="margin-top:16px" onclick="forceClose()">Close</button>`);
-}
-
 function confirmReset(){
-  openModal(`
-    <div style="text-align:center;padding:10px">
-      <i class="ti ti-mood-sad" style="font-size:56px;color:var(--red);display:block;margin-bottom:12px"></i>
-      <h3 style="margin-bottom:8px;color:var(--red)">Restart Challenge?</h3>
-      <p style="font-size:14px;color:var(--txt2);line-height:1.5;margin-bottom:20px">You're on Day ${dayNum()}. Restarting means you missed a task — the consequences apply.</p>
-      <div class="fail-card" style="margin-bottom:16px;text-align:left">
-        <div style="font-size:12px;font-weight:600;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="ti ti-alert-triangle"></i>Your Consequences</div>
-        ${S.consequences.map(c=>`<div style="display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px">
-          <i class="ti ${c.icon}" style="color:var(--red);font-size:18px"></i><span style="color:var(--txt2)">${c.text}</span>
-        </div>`).join('')}
-      </div>
-      <button class="btn btn-danger" style="margin-bottom:8px" onclick="doReset()"><i class="ti ti-refresh"></i>I Accept — Restart from Day 1</button>
-      <button class="btn btn-outline" onclick="forceClose()"><i class="ti ti-arrow-left"></i>Continue Challenge</button>
-    </div>`);
+  openModal(`<div style="text-align:center;padding:8px">
+    <i class="ti ti-refresh" style="font-size:44px;color:var(--red);display:block;margin-bottom:10px"></i>
+    <div style="font-size:18px;font-weight:900;color:var(--red);margin-bottom:8px">Reset to Day 1?</div>
+    <p style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:16px">You're on Day ${dayNum()}. These consequences apply.</p>
+    <div style="background:var(--redbg);border:1px solid var(--redborder);border-radius:var(--r);padding:12px;margin-bottom:16px;text-align:left">
+      ${S.consequences.map(c=>`<div style="display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,64,64,0.1);font-size:12px"><i class="ti ${c.icon}" style="color:var(--red)"></i><span style="color:var(--txt2)">${c.text}</span></div>`).join('')}
+    </div>
+    <button class="btn btn-danger" style="margin-bottom:8px" onclick="doReset()"><i class="ti ti-refresh"></i>I Accept — Restart</button>
+    <button class="btn btn-outline" onclick="forceClose()">Continue Challenge</button>
+  </div>`);
 }
-
-function doReset(){S.startDate=today();S.days={};save();forceClose();showToast('Challenge restarted. Honor your consequences.');render.home();}
-
+function doReset(){S.startDate=today();S.days={};save();forceClose();showToast('Restarted. Honor your consequences.');render.today();}
 function confirmWipe(){
-  openModal(`
-    <div style="text-align:center;padding:10px">
-      <i class="ti ti-trash" style="font-size:56px;color:var(--red);display:block;margin-bottom:12px"></i>
-      <h3 style="color:var(--red);margin-bottom:8px">Erase All Data?</h3>
-      <p class="muted" style="margin-bottom:20px;font-size:14px">This deletes everything permanently.</p>
-      <button class="btn btn-danger" style="margin-bottom:8px" onclick="doWipe()"><i class="ti ti-trash"></i>Yes, Delete Everything</button>
-      <button class="btn btn-outline" onclick="forceClose()">Cancel</button>
-    </div>`);
+  openModal(`<div style="text-align:center;padding:8px">
+    <i class="ti ti-trash" style="font-size:44px;color:var(--red);display:block;margin-bottom:10px"></i>
+    <div style="font-size:18px;font-weight:900;color:var(--red);margin-bottom:8px">Erase All Data?</div>
+    <p style="color:var(--txt2);margin-bottom:16px;font-size:13px">This cannot be undone.</p>
+    <button class="btn btn-danger" style="margin-bottom:8px" onclick="doWipe()"><i class="ti ti-trash"></i>Delete Everything</button>
+    <button class="btn btn-outline" onclick="forceClose()">Cancel</button>
+  </div>`);
 }
-
-function doWipe(){S=defaultState();save();forceClose();render.home();}
-
-function getToken(){if(!S._token){S._token='75H-'+Math.random().toString(36).slice(2,10).toUpperCase();save();}return S._token;}
-function copyStartCmd(){navigator.clipboard?.writeText('/start '+getToken()).then(()=>showToast('Command copied — paste it in Telegram!'));}
-
+function doWipe(){S=def();save();forceClose();render.today();}
 function editConsequence(i){
   const c=S.consequences[i];
-  openModal(`
-    <h3 style="margin-bottom:12px">Edit Consequence</h3>
-    <div style="margin-bottom:10px"><label class="smuted">Tabler icon name (e.g. ti-coin)</label>
-      <input class="input" id="ci" value="${c.icon}" style="margin-top:6px"/></div>
-    <div style="margin-bottom:16px"><label class="smuted">Description</label>
-      <input class="input" id="ct" value="${c.text}" style="margin-top:6px"/></div>
-    <button class="btn btn-primary" onclick="saveConsequence(${i})"><i class="ti ti-device-floppy"></i>Save</button>
-    <button class="btn btn-danger" style="margin-top:8px" onclick="deleteConsequence(${i})"><i class="ti ti-trash"></i>Delete</button>
-    <button class="btn btn-outline" style="margin-top:8px" onclick="forceClose()">Cancel</button>`);
+  openModal(`<div style="font-size:16px;font-weight:900;margin-bottom:12px;text-transform:uppercase">Edit Consequence</div>
+  <div style="margin-bottom:10px"><div class="lbl" style="margin-bottom:6px">Icon (e.g. ti-coin)</div>
+  <input class="input" id="ci" value="${c.icon}"/></div>
+  <div style="margin-bottom:16px"><div class="lbl" style="margin-bottom:6px">Description</div>
+  <input class="input" id="ct" value="${c.text}"/></div>
+  <button class="btn btn-primary" onclick="saveConsequence(${i})"><i class="ti ti-device-floppy"></i>Save</button>
+  <button class="btn btn-danger" style="margin-top:8px" onclick="deleteConsequence(${i})"><i class="ti ti-trash"></i>Delete</button>
+  <button class="btn btn-outline" style="margin-top:8px" onclick="forceClose()">Cancel</button>`);
 }
-
 function saveConsequence(i){S.consequences[i].icon=document.getElementById('ci').value;S.consequences[i].text=document.getElementById('ct').value;save();forceClose();render.settings();}
 function deleteConsequence(i){S.consequences.splice(i,1);save();forceClose();render.settings();}
 function addConsequence(){S.consequences.push({id:'c'+Date.now(),text:'New consequence',icon:'ti-alert-circle'});save();render.settings();editConsequence(S.consequences.length-1);}
+
+function getToken(){if(!S._token){S._token='75H-'+Math.random().toString(36).slice(2,10).toUpperCase();save();}return S._token;}
+function copyCmd(){navigator.clipboard?.writeText('/start '+getToken()).then(()=>showToast('Command copied'));}
 
 let toastT;
 function showToast(msg){
   let t=document.getElementById('toast');
   if(!t){t=document.createElement('div');t.id='toast';
-    t.style.cssText='position:fixed;bottom:calc(env(safe-area-inset-bottom) + 80px);left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg3);border:1px solid var(--border2);color:var(--txt);padding:10px 18px;border-radius:99px;font-size:13px;font-weight:600;z-index:300;transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center';
-    document.body.appendChild(t);}
-  t.textContent=msg; clearTimeout(toastT);
+  t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg4);border:1px solid var(--neonborder);color:var(--neon);padding:10px 20px;border-radius:99px;font-size:11px;font-weight:900;z-index:300;transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;letter-spacing:1px;text-transform:uppercase';
+  document.body.appendChild(t);}
+  t.textContent=msg;clearTimeout(toastT);
   requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
   toastT=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2500);
 }
-
-render.home();
-
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js')
-      .then(reg=>console.log('[SW] registered, scope:',reg.scope))
-      .catch(err=>console.warn('[SW] registration failed:',err));
-  });
-}
+render.today();
 </script>
 </body>
 </html>
