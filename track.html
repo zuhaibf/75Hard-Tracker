@@ -35,7 +35,6 @@
   --border:rgba(192,246,49,0.07);
   --border2:rgba(192,246,49,0.13);
   --r:14px;--r2:10px;
-  /* progress palette */
   --p-lime:#c7ff33;
   --p-green:#84bc39;
   --p-bg:#0b0f08;
@@ -45,58 +44,75 @@
   --p-orange:#de8236;
   --p-muted:#6f7680;
 }
-html{height:100%}
-body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
 
-/* App shell — simple full-height container */
+/* ── APP SHELL ── */
 #app{
   height:100%;
   max-width:430px;
   margin:0 auto;
   position:relative;
-  padding-top:env(safe-area-inset-top);
 }
 
-/* Pages scroll area — leaves room for the fixed nav at bottom */
+/* ── PAGES ──
+   Sits below the status bar (safe-area-inset-top) and above the fixed nav.
+   Nav height ≈ 50px icon+label + env(safe-area-inset-bottom).
+   We use a generous fixed bottom so content is never hidden. */
 #pages{
   position:absolute;
-  top:env(safe-area-inset-top);
+  top:0;
   left:0;
   right:0;
   bottom:0;
   overflow:hidden;
 }
+.page{
+  position:absolute;
+  inset:0;
+  overflow-y:auto;
+  /* iOS momentum scrolling */
+  -webkit-overflow-scrolling:touch;
+  transition:opacity .2s,transform .2s;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(6px);
+}
+.page.active{opacity:1;pointer-events:all;transform:translateY(0)}
 .page-inner{
   padding:20px 16px;
-  /* leave room above the fixed nav so content isn't hidden behind it */
-  padding-bottom:calc(64px + env(safe-area-inset-bottom) + 16px);
+  /* top: clear the status bar */
+  padding-top:calc(env(safe-area-inset-top) + 16px);
+  /* bottom: clear the fixed nav (≈50px) + home-indicator + breathing room */
+  padding-bottom:calc(50px + env(safe-area-inset-bottom) + 24px);
   min-height:100%;
 }
 
-/* NAV — pinned to the actual bottom of the screen (most reliable in iOS PWA) */
+/* ── NAV — fixed to bottom of screen, always flush ── */
 #nav{
   position:fixed;
   bottom:0;
-  left:0;
-  right:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
   max-width:430px;
-  margin:0 auto;
   display:flex;
+  background:rgba(0,0,0,0.96);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  /* 8px above the icons, then exactly the safe-area below — no extra gap */
+  padding:8px 0 env(safe-area-inset-bottom);
   z-index:100;
-  background:#000;
-  border-top:1px solid var(--border2);
-  padding-top:8px;
-  padding-bottom:env(safe-area-inset-bottom);
 }
+
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:none;background:none;color:var(--txt3);cursor:pointer;transition:color .2s;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
 .nav-btn.active{color:var(--neon)}
 .nav-btn i{font-size:20px}
-/* PAGES */
-.page{position:absolute;inset:0;overflow-y:auto;transition:opacity .2s,transform .2s;opacity:0;pointer-events:none;transform:translateY(6px)}
-.page.active{opacity:1;pointer-events:all;transform:translateY(0)}
-/* CARDS */
+
+/* ── CARDS ── */
 .card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
-/* TASK CARDS */
+
+/* ── TASK CARDS ── */
 .task-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:16px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .18s;user-select:none}
 .task-card.done{border-color:var(--neonborder);background:rgba(192,246,49,0.04)}
 .task-card:active{transform:scale(0.985)}
@@ -108,54 +124,63 @@ body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system
 .task-card.done .task-name{opacity:0.4;text-decoration:line-through}
 .task-desc{font-size:12px;color:var(--txt2);font-weight:500}
 .task-time{font-size:10px;color:var(--neon);margin-top:3px;display:flex;align-items:center;gap:3px;font-weight:700}
-/* PILL */
+
+/* ── PILL ── */
 .pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;border:2px solid;flex-shrink:0}
 .pill-neon{background:transparent;color:var(--neon);border-color:var(--neonborder)}
 .pill-blue{background:rgba(29,181,136,0.1);color:var(--blue);border-color:rgba(29,181,136,0.35)}
 .pill-dim{background:var(--bg4);color:var(--txt3);border-color:var(--border2)}
 .pill-red{background:var(--redbg);color:var(--red);border-color:var(--redborder)}
-/* PROGRESS BAR */
+
+/* ── PROGRESS BAR ── */
 .pbar-wrap{background:var(--bg5);border-radius:99px;height:5px;overflow:hidden;margin:6px 0}
 .pbar-fill{height:100%;border-radius:99px;transition:width .4s ease;background:var(--neon)}
-/* STAT BOX */
+
+/* ── STAT BOX ── */
 .stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center}
 .stat-box.active{border-color:var(--neonborder);border-width:2px}
 .stat-num{font-size:32px;font-weight:900;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
 .stat-lbl{font-size:9px;color:var(--txt3);letter-spacing:1.5px;text-transform:uppercase;font-weight:800}
-/* WALL */
+
+/* ── WALL ── */
 .wall-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:10px 0}
 .wall-cell{aspect-ratio:1;border-radius:7px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--bg)}
 .wall-cell.done{background:var(--p-lime)}
 .wall-cell.today{background:transparent;border:2px solid var(--p-lime);color:var(--p-lime)}
 .wall-cell.missed{background:rgba(222,130,54,0.15);border:1px solid rgba(222,130,54,0.3);color:var(--p-orange)}
 .wall-cell.future{background:var(--bg4);border:1px solid var(--border);color:transparent}
-/* AGGREGATES */
+
+/* ── AGGREGATES ── */
 .agg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .agg-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:13px}
 .agg-icon{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--txt3);margin-bottom:6px;text-transform:uppercase}
 .agg-num{font-size:28px;font-weight:900;color:var(--txt);line-height:1;margin-bottom:2px}
 .agg-total{font-size:11px;color:var(--txt3)}
-/* PHASE */
+
+/* ── PHASE ── */
 .phase-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
 .phase-item:last-child{border-bottom:none}
 .phase-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px}
 .phase-dot.done{background:var(--p-lime)}
 .phase-dot.active{background:var(--p-orange);box-shadow:0 0 8px var(--p-orange)}
 .phase-dot.locked{background:var(--bg5);border:2px solid var(--border2)}
-/* BADGE */
+
+/* ── BADGE ── */
 .badge{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:12px 6px;text-align:center}
 .badge.unlocked{border-color:rgba(235,137,57,0.4);background:rgba(235,137,57,0.06)}
 .badge-icon i{font-size:24px;color:var(--txt3);opacity:0.3}
 .badge.unlocked .badge-icon i{color:var(--amber);opacity:1}
 .badge-name{font-size:9px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:0.4px;margin-top:5px}
 .badge-day{font-size:9px;color:var(--txt3);margin-top:1px}
-/* MODAL */
+
+/* ── MODAL ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
 .overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--bg3);border:1px solid var(--border2);border-radius:20px 20px 0 0;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom));width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:85dvh;overflow-y:auto}
 .overlay.open .modal{transform:translateY(0)}
 .modal-handle{width:32px;height:3px;background:var(--bg5);border-radius:99px;margin:0 auto 16px}
-/* BTN */
+
+/* ── BTN ── */
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--r2);font-size:13px;font-weight:800;cursor:pointer;border:none;width:100%;transition:all .15s;letter-spacing:1px;text-transform:uppercase}
 .btn:active{transform:scale(0.97)}
 .btn-primary{background:var(--neon);color:#000}
@@ -164,50 +189,54 @@ body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system
 .input{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r2);color:var(--txt);font-size:14px;padding:12px;width:100%;font-family:inherit;min-width:0}
 input[type="date"].input{-webkit-appearance:none;appearance:none;max-width:100%}
 .input:focus{outline:none;border-color:var(--neon)}
-/* TAKE BTN */
+
+/* ── TAKE BTN ── */
 .take-btn{background:var(--neon);color:#000;border:none;border-radius:var(--r2);padding:9px 14px;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1px;text-transform:uppercase;flex-shrink:0;transition:all .15s}
 .take-btn:active{transform:scale(0.95)}
-/* QUICK BTNS */
+
+/* ── QUICK BTNS ── */
 .quick-btns{display:flex;gap:6px}
 .qbtn{flex:1;padding:10px 6px;border:1px solid var(--border2);background:var(--bg4);color:var(--txt2);border-radius:var(--r2);font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;text-align:center}
 .qbtn:active{transform:scale(0.95);background:var(--neonbg);color:var(--neon);border-color:var(--neonborder)}
-/* LABEL */
+
+/* ── LABEL / SECTION ── */
 .lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3)}
-/* SECTION HEAD */
 .sec{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin:18px 0 8px;display:flex;align-items:center;gap:6px}
 .sec i{font-size:12px}
 .sec:first-child{margin-top:0}
-/* FAIL LINK */
+
+/* ── FAIL LINK ── */
 .fail-link{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--txt3);font-size:10px;font-weight:800;letter-spacing:1px;padding:14px;cursor:pointer;border:none;background:none;text-transform:uppercase;width:100%;margin-top:8px}
 .fail-link:hover{color:var(--red)}
-/* SEPARATOR */
-.sep{height:1px;background:var(--border);margin:6px 0 16px}
-/* PHOTO */
+
+/* ── PHOTO ── */
 .photo-zone{border:1px dashed var(--border2);border-radius:var(--r);height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--txt3);transition:all .2s}
 .photo-zone:hover{border-color:var(--neon);color:var(--neon)}
 .photo-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-top:8px}
 .photo-thumb{width:72px;height:72px;border-radius:var(--r2);object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 .pop{animation:pop .22s ease}
 </style>
 </head>
 <body>
 <div id="app">
-<div id="pages">
-  <div class="page active" id="p-today"><div class="page-inner" id="today-content"></div></div>
-  <div class="page" id="p-progress"><div class="page-inner" id="progress-content"></div></div>
-  <div class="page" id="p-stats"><div class="page-inner" id="stats-content"></div></div>
-  <div class="page" id="p-photos"><div class="page-inner" id="photos-content"></div></div>
-  <div class="page" id="p-settings"><div class="page-inner" id="settings-content"></div></div>
+  <div id="pages">
+    <div class="page active" id="p-today"><div class="page-inner" id="today-content"></div></div>
+    <div class="page" id="p-progress"><div class="page-inner" id="progress-content"></div></div>
+    <div class="page" id="p-stats"><div class="page-inner" id="stats-content"></div></div>
+    <div class="page" id="p-photos"><div class="page-inner" id="photos-content"></div></div>
+    <div class="page" id="p-settings"><div class="page-inner" id="settings-content"></div></div>
+  </div>
+  <nav id="nav">
+    <button class="nav-btn active" data-page="today"    onclick="nav('today')">   <i class="ti ti-bolt"></i>Today</button>
+    <button class="nav-btn"        data-page="progress" onclick="nav('progress')"><i class="ti ti-chart-line"></i>Progress</button>
+    <button class="nav-btn"        data-page="stats"    onclick="nav('stats')">   <i class="ti ti-layout-grid"></i>Stats</button>
+    <button class="nav-btn"        data-page="photos"   onclick="nav('photos')">  <i class="ti ti-camera"></i>Photos</button>
+    <button class="nav-btn"        data-page="settings" onclick="nav('settings')"><i class="ti ti-settings"></i>Settings</button>
+  </nav>
 </div>
-<nav id="nav">
-  <button class="nav-btn active" data-page="today" onclick="nav('today')"><i class="ti ti-bolt"></i>Today</button>
-  <button class="nav-btn" data-page="progress" onclick="nav('progress')"><i class="ti ti-chart-line"></i>Progress</button>
-  <button class="nav-btn" data-page="stats" onclick="nav('stats')"><i class="ti ti-layout-grid"></i>Stats</button>
-  <button class="nav-btn" data-page="photos" onclick="nav('photos')"><i class="ti ti-camera"></i>Photos</button>
-  <button class="nav-btn" data-page="settings" onclick="nav('settings')"><i class="ti ti-settings"></i>Settings</button>
-</nav>
-</div>
+
 <div class="overlay" id="overlay" onclick="closeModal(event)">
   <div class="modal" id="modal"><div class="modal-handle"></div><div id="modal-body"></div></div>
 </div>
@@ -215,8 +244,6 @@ input[type="date"].input{-webkit-appearance:none;appearance:none;max-width:100%}
 
 <script>
 const STORAGE_KEY='75hard_v4';
-// Diet + No Alcohol merged into one "Clean Eating" card (no cheat meals, no soda)
-// Workout 1 = Indoor (45 min), Workout 2 = Outdoor
 const TASKS=[
   {id:'diet', icon:'ti-salad',   name:'Clean Eating',   desc:'No cheat meals. No soda. Stick to your plan.',color:'#c0f631'},
   {id:'w1',   icon:'ti-barbell', name:'Workout 1',      desc:'Indoor — any exercise, min 45 min.',          color:'#c0f631', pill:'45 MIN', pillStyle:'neon', hasOutdoor:true},
@@ -226,8 +253,8 @@ const TASKS=[
   {id:'photo',icon:'ti-camera',  name:'Progress Photo', desc:'Daily body photo. Document the change.',       color:'#eb8939', isPhoto:true},
 ];
 const PHASES=[
-  {n:1,name:'The Foundation', days:'1–7',  desc:'7 days of zero compromise.',         start:1,end:7},
-  {n:2,name:'The Grind',      days:'8–21', desc:'Build momentum through resistance.',  start:8,end:21},
+  {n:1,name:'The Foundation', days:'1–7',  desc:'7 days of zero compromise.',         start:1, end:7},
+  {n:2,name:'The Grind',      days:'8–21', desc:'Build momentum through resistance.',  start:8, end:21},
   {n:3,name:'The Crucible',   days:'22–40',desc:'When most people quit.',              start:22,end:40},
   {n:4,name:'The Forge',      days:'41–55',desc:'Identity transformation begins.',     start:41,end:55},
   {n:5,name:'The Champion',   days:'56–75',desc:'You are not who you were.',           start:56,end:75},
@@ -235,7 +262,7 @@ const PHASES=[
 
 function def(){return{startDate:null,days:{},settings:{name:'Warrior'},consequences:[
   {id:'c1',text:'₹500 donation to a cause you dislike',icon:'ti-coin'},
-  {id:'c2',text:'Extra 45 min outdoor run next day',icon:'ti-run'},
+  {id:'c2',text:'Extra 45 min outdoor run next day',   icon:'ti-run'},
   {id:'c3',text:'No screen time after 8 PM for a week',icon:'ti-device-mobile-off'},
 ]};}
 
@@ -361,7 +388,6 @@ render.progress=function(){
   const donePct=Math.round(dn/75*100);
   const consistPct=totalDays>0?Math.round(perfDays/totalDays*100):0;
 
-  // Wall cells (75, 8 cols)
   let wallHtml='';
   for(let i=1;i<=75;i++){
     let cls='wall-cell ';
@@ -374,18 +400,15 @@ render.progress=function(){
     wallHtml+=`<div class="${cls}">${i<=dn?i:''}</div>`;
   }
 
-  // Aggregates
   const totalW=keys.reduce((a,k)=>{const dd=S.days[k];return a+(dd?.tasks?.w1?1:0)+(dd?.tasks?.w2?1:0);},0);
   const totalWater=keys.reduce((a,k)=>a+(S.days[k]?.water||0),0);
   const totalPages=keys.reduce((a,k)=>a+(S.days[k]?.pages||0),0);
 
-  // Task rates
   const taskRates=TASKS.map(t=>{
     const done=keys.filter(k=>{const dd=S.days[k];return dd&&taskDone(dd,t);}).length;
     return{...t,done,pct:totalDays>0?Math.round(done/totalDays*100):0};
   });
 
-  // Phase milestones
   const phasesHtml=PHASES.map(p=>{
     const isDone=dn>p.end,isActive=dn>=p.start&&dn<=p.end;
     const dotCls=isDone?'done':isActive?'active':'locked';
@@ -421,7 +444,6 @@ render.progress=function(){
     </div>
   </div>
 
-  <!-- TIME REMAINING HERO -->
   <div style="background:var(--p-card);border:1px solid rgba(199,255,51,0.12);border-radius:var(--r);padding:18px;margin-bottom:10px">
     <div class="lbl" style="margin-bottom:10px;color:var(--p-muted)">Time Remaining</div>
     <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px">
@@ -446,7 +468,6 @@ render.progress=function(){
     </div>
   </div>
 
-  <!-- 3 STATS -->
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
     <div class="stat-box active" style="background:var(--p-card);border-color:rgba(199,255,51,0.3)">
       <div class="stat-num" style="color:var(--p-lime)">${dn}</div>
@@ -462,7 +483,6 @@ render.progress=function(){
     </div>
   </div>
 
-  <!-- WALL OF DISCIPLINE -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
     <div class="lbl" style="font-size:11px;letter-spacing:2px;color:var(--p-muted)">Wall of Discipline</div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -475,7 +495,6 @@ render.progress=function(){
     <div class="wall-grid">${wallHtml}</div>
   </div>
 
-  <!-- LIFETIME AGGREGATES -->
   <div class="sec"><i class="ti ti-bolt"></i>Lifetime Aggregates</div>
   <div class="agg-grid">
     <div class="agg-box">
@@ -504,7 +523,6 @@ render.progress=function(){
     </div>
   </div>
 
-  <!-- TASK RATES -->
   <div class="sec"><i class="ti ti-list-check"></i>Task Completion Rate</div>
   <div class="card" style="background:var(--p-card);border-color:rgba(199,255,51,0.08)">
     ${taskRates.map(t=>`
@@ -516,7 +534,6 @@ render.progress=function(){
     </div>`).join('')}
   </div>
 
-  <!-- PHASE MILESTONES -->
   <div class="sec"><i class="ti ti-flag"></i>Phase Milestones</div>
   <div class="card" style="background:var(--p-card);border-color:rgba(199,255,51,0.08)">${phasesHtml}</div>
 
@@ -541,12 +558,12 @@ render.stats=function(){
   }
   const maxPct=Math.max(...bars.map(b=>b.pct),1);
   const badges=[
-    {day:1,name:'Started',icon:'ti-rocket'},
-    {day:7,name:'1 Week',icon:'ti-star'},
-    {day:14,name:'2 Weeks',icon:'ti-diamond'},
-    {day:21,name:'21 Days',icon:'ti-shield'},
-    {day:30,name:'1 Month',icon:'ti-crown'},
-    {day:50,name:'50 Days',icon:'ti-sword'},
+    {day:1, name:'Started', icon:'ti-rocket'},
+    {day:7, name:'1 Week',  icon:'ti-star'},
+    {day:14,name:'2 Weeks', icon:'ti-diamond'},
+    {day:21,name:'21 Days', icon:'ti-shield'},
+    {day:30,name:'1 Month', icon:'ti-crown'},
+    {day:50,name:'50 Days', icon:'ti-sword'},
     {day:75,name:'Finished',icon:'ti-trophy'},
   ];
   document.getElementById('stats-content').innerHTML=`
@@ -594,17 +611,18 @@ render.photos=function(){
     <div style="font-size:32px;font-weight:900">PHOTOS</div>
     <button class="btn btn-primary" style="width:auto;padding:10px 16px;font-size:12px" onclick="document.getElementById('photo-input').click()"><i class="ti ti-camera-plus"></i>Add</button>
   </div>
-  ${allPhotos.length===0?`<div style="text-align:center;padding:60px 20px"><i class="ti ti-camera" style="font-size:48px;color:var(--txt3);display:block;margin-bottom:12px"></i><div style="font-size:14px;color:var(--txt2)">No photos yet.</div><div style="font-size:12px;color:var(--txt3);margin-top:4px">Take daily progress photos to track your transformation.</div></div>`:
-  `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    ${allPhotos.map(p=>`
-    <div style="position:relative;cursor:pointer" onclick="showPhoto('${p.src}','${p.k}',${p.dn2})">
-      <img src="${p.src}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--r);border:1px solid var(--border)"/>
-      <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));border-radius:0 0 var(--r) var(--r);padding:8px 10px">
-        <div style="font-size:11px;font-weight:900;color:var(--neon)">DAY ${p.dn2}</div>
-        <div style="font-size:9px;color:rgba(255,255,255,0.5)">${p.k}</div>
-      </div>
-    </div>`).join('')}
-  </div>`}`;
+  ${allPhotos.length===0
+    ?`<div style="text-align:center;padding:60px 20px"><i class="ti ti-camera" style="font-size:48px;color:var(--txt3);display:block;margin-bottom:12px"></i><div style="font-size:14px;color:var(--txt2)">No photos yet.</div><div style="font-size:12px;color:var(--txt3);margin-top:4px">Take daily progress photos to track your transformation.</div></div>`
+    :`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      ${allPhotos.map(p=>`
+      <div style="position:relative;cursor:pointer" onclick="showPhoto('${p.src}','${p.k}',${p.dn2})">
+        <img src="${p.src}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--r);border:1px solid var(--border)"/>
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));border-radius:0 0 var(--r) var(--r);padding:8px 10px">
+          <div style="font-size:11px;font-weight:900;color:var(--neon)">DAY ${p.dn2}</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.5)">${p.k}</div>
+        </div>
+      </div>`).join('')}
+    </div>`}`;
 };
 
 /* ── SETTINGS ── */
@@ -788,13 +806,16 @@ function copyCmd(){navigator.clipboard?.writeText('/start '+getToken()).then(()=
 let toastT;
 function showToast(msg){
   let t=document.getElementById('toast');
-  if(!t){t=document.createElement('div');t.id='toast';
-  t.style.cssText='position:fixed;bottom:calc(env(safe-area-inset-bottom) + 80px);left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg4);border:1px solid var(--neonborder);color:var(--neon);padding:10px 20px;border-radius:99px;font-size:11px;font-weight:900;z-index:300;transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;letter-spacing:1px;text-transform:uppercase';
-  document.body.appendChild(t);}
+  if(!t){
+    t=document.createElement('div');t.id='toast';
+    t.style.cssText='position:fixed;bottom:calc(env(safe-area-inset-bottom) + 70px);left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg4);border:1px solid var(--neonborder);color:var(--neon);padding:10px 20px;border-radius:99px;font-size:11px;font-weight:900;z-index:300;transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;letter-spacing:1px;text-transform:uppercase';
+    document.body.appendChild(t);
+  }
   t.textContent=msg;clearTimeout(toastT);
   requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
   toastT=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2500);
 }
+
 render.today();
 </script>
 </body>
