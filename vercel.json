@@ -3,12 +3,6 @@
   "rewrites": [
     { "source": "/", "destination": "/track.html" }
   ],
-  "crons": [
-    {
-      "path": "/api/cron",
-      "schedule": "0 * * * *"
-    }
-  ],
   "functions": {
     "api/webhook.js":   { "maxDuration": 10 },
     "api/cron.js":      { "maxDuration": 30 },
