@@ -1,10 +1,10 @@
 {
   "name": "75hard-tracker",
   "version": "1.0.0",
-  "description": "75 Hard challenge tracker PWA with Telegram bot reminders",
+  "description": "75 Hard challenge tracker PWA with Telegram reminders",
   "type": "module",
   "dependencies": {
-    "@vercel/kv": "^2.0.0"
+    "@supabase/supabase-js": "^2.45.0"
   },
   "engines": {
     "node": ">=18"
