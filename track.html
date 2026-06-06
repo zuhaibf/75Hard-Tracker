@@ -44,7 +44,6 @@
   --p-teal:#21b788;
   --p-orange:#de8236;
   --p-muted:#6f7680;
-  /* nav pill height for bottom padding calc */
   --nav-h:64px;
   --nav-bottom:max(16px, env(safe-area-inset-bottom));
 }
@@ -55,90 +54,35 @@ html,body{
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
   overflow:hidden;
 }
-
-/* ── APP SHELL ── */
-#app{
-  height:100%;
-  max-width:430px;
-  margin:0 auto;
-  position:relative;
-}
-
-/* ── PAGES ── fills full height, content scrolls inside */
-#pages{
-  position:absolute;
-  inset:0;
-  overflow:hidden;
-}
+#app{height:100%;max-width:430px;margin:0 auto;position:relative;}
+#pages{position:absolute;inset:0;overflow:hidden;}
 .page{
-  position:absolute;
-  inset:0;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  transition:opacity .2s,transform .2s;
-  opacity:0;
-  pointer-events:none;
-  transform:translateY(6px);
+  position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  transition:opacity .2s,transform .2s;opacity:0;pointer-events:none;transform:translateY(6px);
 }
 .page.active{opacity:1;pointer-events:all;transform:translateY(0)}
-
 .page-inner{
-  /* top: clear status bar */
   padding-top:calc(env(safe-area-inset-top) + 20px);
-  padding-left:16px;
-  padding-right:16px;
-  /* bottom: clear floating nav pill + its bottom gap + breathing room */
+  padding-left:16px;padding-right:16px;
   padding-bottom:calc(var(--nav-h) + var(--nav-bottom) + 24px);
   min-height:100%;
 }
-
-/* ── FLOATING PILL NAV ──
-   Sits above the home indicator — never touches the screen edge.
-   No safe-area padding needed here; the gap IS the safe area buffer. */
 #nav{
-  position:fixed;
-  bottom:var(--nav-bottom);
-  left:50%;
-  transform:translateX(-50%);
-  width:calc(100% - 32px);
-  max-width:398px;
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  background:rgba(8,8,8,0.96);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:10px 8px;
-  height:var(--nav-h);
-  z-index:100;
+  position:fixed;bottom:var(--nav-bottom);left:50%;transform:translateX(-50%);
+  width:calc(100% - 32px);max-width:398px;
+  display:flex;align-items:center;justify-content:space-around;
+  background:rgba(8,8,8,0.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--border);border-radius:22px;padding:10px 8px;
+  height:var(--nav-h);z-index:100;
 }
-
 .nav-btn{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:3px;
-  padding:4px 2px;
-  border:none;
-  background:none;
-  color:var(--txt3);
-  cursor:pointer;
-  transition:color .2s;
-  font-size:9px;
-  font-weight:800;
-  letter-spacing:1px;
-  text-transform:uppercase;
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;
+  border:none;background:none;color:var(--txt3);cursor:pointer;transition:color .2s;
+  font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
 }
 .nav-btn.active{color:var(--neon)}
 .nav-btn i{font-size:20px}
-
-/* ── CARDS ── */
 .card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
-
-/* ── TASK CARDS ── */
 .task-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:16px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .18s;user-select:none}
 .task-card.done{border-color:var(--neonborder);background:rgba(192,246,49,0.04)}
 .task-card:active{transform:scale(0.985)}
@@ -150,63 +94,45 @@ html,body{
 .task-card.done .task-name{opacity:0.4;text-decoration:line-through}
 .task-desc{font-size:12px;color:var(--txt2);font-weight:500}
 .task-time{font-size:10px;color:var(--neon);margin-top:3px;display:flex;align-items:center;gap:3px;font-weight:700}
-
-/* ── PILL ── */
 .pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;border:2px solid;flex-shrink:0}
 .pill-neon{background:transparent;color:var(--neon);border-color:var(--neonborder)}
 .pill-blue{background:rgba(29,181,136,0.1);color:var(--blue);border-color:rgba(29,181,136,0.35)}
 .pill-dim{background:var(--bg4);color:var(--txt3);border-color:var(--border2)}
 .pill-red{background:var(--redbg);color:var(--red);border-color:var(--redborder)}
-
-/* ── PROGRESS BAR ── */
 .pbar-wrap{background:var(--bg5);border-radius:99px;height:5px;overflow:hidden;margin:6px 0}
 .pbar-fill{height:100%;border-radius:99px;transition:width .4s ease;background:var(--neon)}
-
-/* ── STAT BOX ── */
 .stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center}
 .stat-box.active{border-color:var(--neonborder);border-width:2px}
 .stat-num{font-size:32px;font-weight:900;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
 .stat-lbl{font-size:9px;color:var(--txt3);letter-spacing:1.5px;text-transform:uppercase;font-weight:800}
-
-/* ── WALL ── */
 .wall-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:10px 0}
 .wall-cell{aspect-ratio:1;border-radius:7px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--bg)}
 .wall-cell.done{background:var(--p-lime)}
 .wall-cell.today{background:transparent;border:2px solid var(--p-lime);color:var(--p-lime)}
 .wall-cell.missed{background:rgba(222,130,54,0.15);border:1px solid rgba(222,130,54,0.3);color:var(--p-orange)}
 .wall-cell.future{background:var(--bg4);border:1px solid var(--border);color:transparent}
-
-/* ── AGGREGATES ── */
 .agg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .agg-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:13px}
 .agg-icon{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--txt3);margin-bottom:6px;text-transform:uppercase}
 .agg-num{font-size:28px;font-weight:900;color:var(--txt);line-height:1;margin-bottom:2px}
 .agg-total{font-size:11px;color:var(--txt3)}
-
-/* ── PHASE ── */
 .phase-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
 .phase-item:last-child{border-bottom:none}
 .phase-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px}
 .phase-dot.done{background:var(--p-lime)}
 .phase-dot.active{background:var(--p-orange);box-shadow:0 0 8px var(--p-orange)}
 .phase-dot.locked{background:var(--bg5);border:2px solid var(--border2)}
-
-/* ── BADGE ── */
 .badge{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:12px 6px;text-align:center}
 .badge.unlocked{border-color:rgba(235,137,57,0.4);background:rgba(235,137,57,0.06)}
 .badge-icon i{font-size:24px;color:var(--txt3);opacity:0.3}
 .badge.unlocked .badge-icon i{color:var(--amber);opacity:1}
 .badge-name{font-size:9px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:0.4px;margin-top:5px}
 .badge-day{font-size:9px;color:var(--txt3);margin-top:1px}
-
-/* ── MODAL ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
 .overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--bg3);border:1px solid var(--border2);border-radius:20px 20px 0 0;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom));width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:85dvh;overflow-y:auto}
 .overlay.open .modal{transform:translateY(0)}
 .modal-handle{width:32px;height:3px;background:var(--bg5);border-radius:99px;margin:0 auto 16px}
-
-/* ── BTN ── */
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--r2);font-size:13px;font-weight:800;cursor:pointer;border:none;width:100%;transition:all .15s;letter-spacing:1px;text-transform:uppercase}
 .btn:active{transform:scale(0.97)}
 .btn-primary{background:var(--neon);color:#000}
@@ -214,58 +140,33 @@ html,body{
 .btn-outline{background:transparent;border:1px solid var(--border2);color:var(--txt)}
 .input{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r2);color:var(--txt);font-size:14px;padding:12px;width:100%;font-family:inherit;min-width:0}
 input[type="date"].input{-webkit-appearance:none;appearance:none;max-width:100%}
+select.input option{background:var(--bg4);color:var(--txt)}
 .input:focus{outline:none;border-color:var(--neon)}
-
-/* ── TAKE BTN ── */
 .take-btn{background:var(--neon);color:#000;border:none;border-radius:var(--r2);padding:9px 14px;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1px;text-transform:uppercase;flex-shrink:0;transition:all .15s}
 .take-btn:active{transform:scale(0.95)}
-
-/* ── QUICK BTNS ── */
 .quick-btns{display:flex;gap:6px}
 .qbtn{flex:1;padding:10px 6px;border:1px solid var(--border2);background:var(--bg4);color:var(--txt2);border-radius:var(--r2);font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;text-align:center}
 .qbtn:active{transform:scale(0.95);background:var(--neonbg);color:var(--neon);border-color:var(--neonborder)}
-
-/* ── LABEL / SECTION ── */
 .lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3)}
 .sec{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin:18px 0 8px;display:flex;align-items:center;gap:6px}
 .sec i{font-size:12px}
 .sec:first-child{margin-top:0}
-
-/* ── FAIL LINK ── */
 .fail-link{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--txt3);font-size:10px;font-weight:800;letter-spacing:1px;padding:14px;cursor:pointer;border:none;background:none;text-transform:uppercase;width:100%;margin-top:8px}
 .fail-link:hover{color:var(--red)}
-
-/* ── PHOTO ── */
 .photo-zone{border:1px dashed var(--border2);border-radius:var(--r);height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--txt3);transition:all .2s}
 .photo-zone:hover{border-color:var(--neon);color:var(--neon)}
 .photo-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-top:8px}
 .photo-thumb{width:72px;height:72px;border-radius:var(--r2);object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
-
-/* ── TOAST — sits above the nav pill ── */
 #toast{
   position:fixed;
   bottom:calc(var(--nav-h) + var(--nav-bottom) + 12px);
-  left:50%;
-  transform:translateX(-50%) translateY(10px);
-  background:var(--bg4);
-  border:1px solid var(--neonborder);
-  color:var(--neon);
-  padding:10px 20px;
-  border-radius:99px;
-  font-size:11px;
-  font-weight:900;
-  z-index:300;
-  transition:all .25s;
-  opacity:0;
-  pointer-events:none;
-  white-space:nowrap;
-  max-width:90vw;
-  text-align:center;
-  letter-spacing:1px;
-  text-transform:uppercase;
+  left:50%;transform:translateX(-50%) translateY(10px);
+  background:var(--bg4);border:1px solid var(--neonborder);color:var(--neon);
+  padding:10px 20px;border-radius:99px;font-size:11px;font-weight:900;z-index:300;
+  transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;
+  max-width:90vw;text-align:center;letter-spacing:1px;text-transform:uppercase;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 .pop{animation:pop .22s ease}
 </style>
@@ -279,8 +180,6 @@ input[type="date"].input{-webkit-appearance:none;appearance:none;max-width:100%}
     <div class="page"        id="p-photos">  <div class="page-inner" id="photos-content"></div></div>
     <div class="page"        id="p-settings"><div class="page-inner" id="settings-content"></div></div>
   </div>
-
-  <!-- FLOATING PILL NAV -->
   <nav id="nav">
     <button class="nav-btn active" data-page="today"    onclick="nav('today')">   <i class="ti ti-bolt"></i>Today</button>
     <button class="nav-btn"        data-page="progress" onclick="nav('progress')"><i class="ti ti-chart-line"></i>Progress</button>
@@ -315,13 +214,13 @@ const PHASES=[
   {n:5,name:'The Champion',   days:'56–75',desc:'You are not who you were.',           start:56,end:75},
 ];
 
-function def(){return{startDate:null,days:{},settings:{name:'Warrior'},consequences:[
+function def(){return{startDate:null,days:{},settings:{name:'Warrior'},customReminders:[],consequences:[
   {id:'c1',text:'₹500 donation to a cause you dislike',icon:'ti-coin'},
   {id:'c2',text:'Extra 45 min outdoor run next day',   icon:'ti-run'},
   {id:'c3',text:'No screen time after 8 PM for a week',icon:'ti-device-mobile-off'},
 ]};}
 
-let S=(()=>{try{const d=JSON.parse(localStorage.getItem(STORAGE_KEY));return d||def();}catch{return def();}})();
+let S=(()=>{try{const d=JSON.parse(localStorage.getItem(STORAGE_KEY));if(d&&!d.customReminders)d.customReminders=[];return d||def();}catch{return def();}})();
 function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(S));}catch{}}
 function today(){return new Date().toISOString().slice(0,10);}
 function dayNum(){if(!S.startDate)return 0;const d=Math.floor((new Date(today())-new Date(S.startDate))/86400000)+1;return Math.min(Math.max(d,1),75);}
@@ -675,6 +574,35 @@ render.settings=function(){
     </div>`).join('')}
     <button class="btn btn-outline" style="margin-top:12px;font-size:11px;border-color:var(--redborder);color:var(--red)" onclick="addConsequence()"><i class="ti ti-plus"></i>Add Consequence</button>
   </div>
+  ${telegramSettingsHTML()}
+  <div class="sec" style="color:var(--red)">Danger Zone</div>
+  <div class="card">
+    <button class="btn btn-danger" style="margin-bottom:8px" onclick="confirmReset()"><i class="ti ti-refresh"></i>Restart Challenge</button>
+    <button class="btn btn-outline" style="color:var(--red);border-color:var(--redborder)" onclick="confirmWipe()"><i class="ti ti-trash"></i>Erase All Data</button>
+  </div>`;
+};
+
+/* ── TELEGRAM SETTINGS ── */
+function fmt12(h){const s=h>=12?'PM':'AM';const h12=h%12||12;return `${h12}:00 ${s} IST`;}
+
+function telegramSettingsHTML(){
+  const token=getToken();
+  const reminders=S.customReminders||[];
+  const reminderRows=reminders.map((r,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:800;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.label}</div>
+        <div style="font-size:11px;color:var(--txt3);margin-top:2px">${fmt12(r.hourIST)}</div>
+      </div>
+      <button onclick="toggleCustomReminder(${i})" style="background:${r.enabled?'var(--neonbg)':'var(--bg4)'};border:1px solid ${r.enabled?'var(--neonborder)':'var(--border2)'};border-radius:6px;padding:4px 10px;font-size:10px;font-weight:900;color:${r.enabled?'var(--neon)':'var(--txt3)'};cursor:pointer;letter-spacing:0.5px;text-transform:uppercase;transition:all .15s;flex-shrink:0">
+        ${r.enabled?'ON':'OFF'}
+      </button>
+      <button onclick="deleteCustomReminder(${i})" style="background:none;border:none;color:var(--txt3);cursor:pointer;padding:4px;flex-shrink:0">
+        <i class="ti ti-trash" style="font-size:16px"></i>
+      </button>
+    </div>`).join('');
+
+  return `
   <div class="sec"><i class="ti ti-brand-telegram" style="color:#2AABEE"></i>Telegram Reminders</div>
   <div class="card">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
@@ -683,9 +611,11 @@ render.settings=function(){
       </div>
       <div>
         <div style="font-size:14px;font-weight:800">@my75hard_bot</div>
-        <div style="font-size:11px;color:var(--txt3)">4 daily reminders — 7am, 12pm, 6pm, 9pm</div>
+        <div style="font-size:11px;color:var(--txt3)">Built-in + custom reminders</div>
       </div>
     </div>
+
+    <!-- Connect instructions -->
     <div style="background:var(--bg4);border-radius:var(--r2);padding:12px;margin-bottom:12px">
       <div class="lbl" style="margin-bottom:8px">How to Connect</div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
@@ -696,25 +626,100 @@ render.settings=function(){
         <div style="width:20px;height:20px;border-radius:50%;background:var(--bg5);border:1px solid var(--border2);color:var(--txt2);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
         <div style="font-size:12px;color:var(--txt2)">Send this command:</div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 12px;margin:0 0 8px 30px;display:flex;align-items:center;gap:8px">
-        <code style="font-size:11px;color:var(--neon);flex:1;word-break:break-all">/start ${getToken()}</code>
+      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 12px;margin:0 0 4px 30px;display:flex;align-items:center;gap:8px">
+        <code style="font-size:11px;color:var(--neon);flex:1;word-break:break-all">/start ${token}</code>
         <button onclick="copyCmd()" style="background:none;border:none;color:var(--txt3);cursor:pointer;padding:2px"><i class="ti ti-copy" style="font-size:15px"></i></button>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:10px">
-        <div style="width:20px;height:20px;border-radius:50%;background:var(--neon);color:#000;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
-        <div style="font-size:12px;color:var(--txt2)">Done! Reminders start immediately.</div>
-      </div>
     </div>
-    <a href="https://t.me/my75hard_bot" target="_blank" class="btn btn-primary" style="text-decoration:none;display:flex;background:rgba(42,171,238,0.15);color:#2AABEE;border:1px solid rgba(42,171,238,0.35)">
+    <a href="https://t.me/my75hard_bot" target="_blank" class="btn btn-primary" style="text-decoration:none;display:flex;background:rgba(42,171,238,0.15);color:#2AABEE;border:1px solid rgba(42,171,238,0.35);margin-bottom:16px">
       <i class="ti ti-brand-telegram"></i>Open @my75hard_bot
     </a>
-  </div>
-  <div class="sec" style="color:var(--red)">Danger Zone</div>
-  <div class="card">
-    <button class="btn btn-danger" style="margin-bottom:8px" onclick="confirmReset()"><i class="ti ti-refresh"></i>Restart Challenge</button>
-    <button class="btn btn-outline" style="color:var(--red);border-color:var(--redborder)" onclick="confirmWipe()"><i class="ti ti-trash"></i>Erase All Data</button>
+
+    <!-- Built-in reminders (read-only) -->
+    <div class="lbl" style="margin-bottom:6px">Built-in Reminders</div>
+    ${[['07:00','🌅 Morning check-in'],['12:00','💧 Water check'],['18:00','☀️ Outdoor workout'],['21:00','📋 Evening wrap-up']].map(([t,l])=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:11px;font-weight:900;color:var(--neon);min-width:44px">${t}</span>
+      <span style="font-size:12px;color:var(--txt2);flex:1">${l}</span>
+      <span class="pill pill-dim" style="font-size:9px;padding:2px 7px">DEFAULT</span>
+    </div>`).join('')}
+
+    <!-- Custom reminders -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:4px">
+      <div class="lbl">Custom Reminders</div>
+      <button onclick="openAddReminderModal()" style="background:var(--neonbg);border:1px solid var(--neonborder);border-radius:6px;padding:4px 12px;font-size:10px;font-weight:900;color:var(--neon);cursor:pointer;letter-spacing:0.5px;text-transform:uppercase;display:flex;align-items:center;gap:4px;transition:all .15s">
+        <i class="ti ti-plus" style="font-size:12px"></i>Add
+      </button>
+    </div>
+    ${reminders.length===0
+      ?`<div style="font-size:12px;color:var(--txt3);padding:12px 0;text-align:center">No custom reminders yet.<br><span style="font-size:11px">Tap Add to create one.</span></div>`
+      : reminderRows
+    }
+    ${reminders.length>0?`
+    <button id="sync-btn" onclick="syncReminders()" class="btn btn-outline" style="margin-top:12px;font-size:11px;border-color:var(--neonborder);color:var(--neon)">
+      <i class="ti ti-cloud-upload"></i>Sync to Bot
+    </button>`:''}
   </div>`;
-};
+}
+
+/* ── REMINDER ACTIONS ── */
+function openAddReminderModal(){
+  openModal(`
+  <div style="font-size:16px;font-weight:900;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px">New Reminder</div>
+  <div style="margin-bottom:12px">
+    <div class="lbl" style="margin-bottom:6px">Label</div>
+    <input class="input" id="rl" placeholder="e.g. Take progress photo" maxlength="60" style="font-size:14px"/>
+  </div>
+  <div style="margin-bottom:20px">
+    <div class="lbl" style="margin-bottom:6px">Time (IST)</div>
+    <select class="input" id="rh" style="-webkit-appearance:none;appearance:none;cursor:pointer">
+      ${Array.from({length:24},(_,i)=>`<option value="${i}" ${i===8?'selected':''}>${fmt12(i)}</option>`).join('')}
+    </select>
+  </div>
+  <button class="btn btn-primary" onclick="saveNewReminder()"><i class="ti ti-bell"></i>Add Reminder</button>
+  <button class="btn btn-outline" style="margin-top:8px" onclick="forceClose()">Cancel</button>`);
+}
+
+function saveNewReminder(){
+  const label=(document.getElementById('rl')?.value||'').trim();
+  const hourIST=parseInt(document.getElementById('rh')?.value,10);
+  if(!label){showToast('Enter a label');return;}
+  if(!S.customReminders)S.customReminders=[];
+  if(S.customReminders.length>=10){showToast('Max 10 reminders');return;}
+  S.customReminders.push({id:String(Date.now()),label,hourIST,enabled:true});
+  save();forceClose();render.settings();
+  syncReminders();
+}
+
+function toggleCustomReminder(i){
+  if(!S.customReminders?.[i])return;
+  S.customReminders[i].enabled=!S.customReminders[i].enabled;
+  save();render.settings();syncReminders();
+}
+
+function deleteCustomReminder(i){
+  S.customReminders?.splice(i,1);
+  save();render.settings();syncReminders();
+}
+
+async function syncReminders(){
+  const token=getToken();
+  const btn=document.getElementById('sync-btn');
+  if(btn){btn.innerHTML='<i class="ti ti-loader" style="font-size:14px"></i>Syncing…';btn.disabled=true;}
+  try{
+    const res=await fetch(`/api/reminders?token=${token}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({reminders:S.customReminders||[]}),
+    });
+    if(res.ok){showToast('Reminders synced ✓');}
+    else{
+      const err=await res.json().catch(()=>({}));
+      showToast(err.error==='Token not linked to any chat'?'Link bot first via /start':'Sync failed');
+    }
+  }catch{showToast('Sync failed — check connection');}
+  render.settings();
+}
 
 /* ── ACTIONS ── */
 function startChallenge(){
@@ -742,7 +747,7 @@ function toggleOutdoor(id){
 function openWaterModal(){
   const dd=td();
   openModal(`
-  <div style="font-size:18px;font-weight:900;margin-bottom:4px;text-transform:uppercase">Water Intake</div>
+  <div style="font-size:18px;font-weight:900;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Water Intake</div>
   <div style="font-size:12px;color:var(--txt2);margin-bottom:16px">Target: 4 litres per day</div>
   <div style="text-align:center;padding:10px 0 16px">
     <div id="wb" style="font-size:48px;font-weight:900;color:#1db588">${(dd.water/1000).toFixed(1)}L</div>
@@ -810,7 +815,7 @@ function confirmWipe(){
 function doWipe(){S=def();save();forceClose();render.today();}
 function editConsequence(i){
   const c=S.consequences[i];
-  openModal(`<div style="font-size:16px;font-weight:900;margin-bottom:12px;text-transform:uppercase">Edit Consequence</div>
+  openModal(`<div style="font-size:16px;font-weight:900;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Edit Consequence</div>
   <div style="margin-bottom:10px"><div class="lbl" style="margin-bottom:6px">Icon (e.g. ti-coin)</div>
   <input class="input" id="ci" value="${c.icon}"/></div>
   <div style="margin-bottom:16px"><div class="lbl" style="margin-bottom:6px">Description</div>
@@ -828,10 +833,8 @@ function copyCmd(){navigator.clipboard?.writeText('/start '+getToken()).then(()=
 
 function showToast(msg){
   const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  clearTimeout(t._t);
-  t._t=setTimeout(()=>t.classList.remove('show'),2500);
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);
 }
 
 render.today();
