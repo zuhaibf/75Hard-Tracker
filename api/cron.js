@@ -1,33 +1,28 @@
 // api/cron.js
-// Vercel Cron Job — runs every hour UTC, sends built-in + custom reminders.
-// vercel.json schedule: "0 * * * *"
+// Called every hour by cron-job.org.
+// Sends built-in reminders at fixed IST hours, plus any custom reminders due now.
 
-import { kv } from '@vercel/kv';
-import { sendWithAppButton, sendMessage } from '../lib/telegram.js';
+import { createClient } from '@supabase/supabase-js';
+import { getAllChatIds } from '../lib/store.js';
+import { sendWithAppButton } from '../lib/telegram.js';
 
 const APP_URL = process.env.APP_URL || 'https://75-hard-tracker-one.vercel.app/track.html';
 
-// Built-in reminders keyed by IST hour
-const BUILTIN = {
-  7: {
-    text: `🌅 <b>Good morning, Warrior!</b>\n\nDay starts now. Remember:\n📸 Take your progress photo early\n🥗 Commit to your diet from the first meal\n💧 Start hydrating — 4L to go\n\n<i>"The only easy day was yesterday."</i>`,
-  },
-  12: {
-    text: `💧 <b>Midday Water Check</b>\n\nYou should be at least halfway to your 4L goal by now.\n\nAlso — have you done Workout 1 yet? If not, now's a great window. ⏰`,
-  },
-  18: {
-    text: `☀️ <b>Outdoor Workout Check</b>\n\nReminder: <b>Workout 2 must be outdoors.</b>\n\nIf you haven't done it yet, golden hour is perfect. 🌇`,
-  },
-  21: {
-    text: `📋 <b>Evening Wrap-up</b>\n\nOnly a few hours left. Quick checklist:\n\n🏋️ Both workouts done?\n💧 Water goal hit?\n📚 10 pages read?\n📸 Progress photo taken?\n🥗 Diet followed all day?\n☀️ Outdoor workout done?\n\n<i>Don't stop when you're tired. Stop when you're done.</i>`,
-  },
-};
-
-// IST = UTC + 5:30, so istHour = (utcHour + 5 + floor((utcMin+30)/60)) % 24
-function utcToIST(utcHour, utcMin) {
-  const totalMin = utcHour * 60 + utcMin + 330; // +5:30
-  return Math.floor(totalMin / 60) % 24;
+function getClient() {
+  return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
+
+// IST = UTC + 5:30
+function utcToISTHour(utcHour, utcMin) {
+  return Math.floor((utcHour * 60 + utcMin + 330) / 60) % 24;
+}
+
+const BUILTIN = {
+  7: `🌅 <b>Good morning, Warrior!</b>\n\nDay starts now. Remember:\n📸 Take your progress photo early\n🥗 Commit to your diet from the first meal\n💧 Start hydrating — 4L to go\n\n<i>"The only easy day was yesterday."</i>`,
+  12: `💧 <b>Midday Water Check</b>\n\nYou should be at least halfway to your 4L goal by now.\n\nAlso — have you done Workout 1 yet? If not, now's a great window. ⏰`,
+  18: `☀️ <b>Outdoor Workout Check</b>\n\nReminder: <b>Workout 2 must be outdoors.</b>\n\nIf you haven't done it yet, golden hour is perfect. 🌇`,
+  21: `📋 <b>Evening Wrap-up</b>\n\nOnly a few hours left. Quick checklist:\n\n🏋️ Both workouts done?\n💧 Water goal hit?\n📚 10 pages read?\n📸 Progress photo taken?\n🥗 Diet followed all day?\n☀️ Outdoor workout done?\n\n<i>Don't stop when you're tired. Stop when you're done.</i>`,
+};
 
 export default async function handler(req, res) {
   const authHeader = req.headers.authorization;
@@ -36,51 +31,46 @@ export default async function handler(req, res) {
   }
 
   const now = new Date();
-  const istHour = utcToIST(now.getUTCHours(), now.getUTCMinutes());
-
+  const istHour = utcToISTHour(now.getUTCHours(), now.getUTCMinutes());
+  const supabase = getClient();
   let sent = 0, failed = 0;
 
-  // Scan all linked chats
-  let cursor = 0;
-  do {
-    const [nextCursor, keys] = await kv.scan(cursor, { match: 'chat:*', count: 100 });
-    cursor = nextCursor;
-
-    for (const key of keys) {
-      const chatId = key.replace('chat:', '');
-
-      // 1. Check built-in reminder for this IST hour
-      const builtin = BUILTIN[istHour];
-      if (builtin) {
-        try {
-          await sendWithAppButton(chatId, builtin.text, APP_URL);
-          sent++;
-        } catch (err) {
-          console.error(`[cron] builtin failed for ${chatId}:`, err.message);
-          failed++;
-        }
-      }
-
-      // 2. Check custom reminders for this chatId
+  // 1. Built-in reminders — broadcast to all active users
+  const builtinText = BUILTIN[istHour];
+  if (builtinText) {
+    const chatIds = await getAllChatIds();
+    for (const chatId of chatIds) {
       try {
-        const customs = (await kv.get(`reminders:${chatId}`)) || [];
-        for (const r of customs) {
-          if (r.enabled && r.hourIST === istHour) {
-            const msg = `🔔 <b>${r.label}</b>\n\n<i>Custom reminder from your 75 Hard tracker.</i>`;
-            try {
-              await sendWithAppButton(chatId, msg, APP_URL);
-              sent++;
-            } catch (err) {
-              console.error(`[cron] custom reminder failed for ${chatId}:`, err.message);
-              failed++;
-            }
-          }
-        }
+        await sendWithAppButton(chatId, builtinText, APP_URL);
+        sent++;
       } catch (err) {
-        console.error(`[cron] error fetching customs for ${chatId}:`, err.message);
+        console.error(`[cron] builtin failed for ${chatId}:`, err.message);
+        failed++;
       }
     }
-  } while (cursor !== 0);
+  }
+
+  // 2. Custom reminders — query only rows due this IST hour
+  const { data: customs, error } = await supabase
+    .from('reminders')
+    .select('chat_id, label')
+    .eq('hour_ist', istHour)
+    .eq('enabled', true);
+
+  if (error) {
+    console.error('[cron] custom reminders query failed:', error.message);
+  } else {
+    for (const r of customs) {
+      const msg = `🔔 <b>${r.label}</b>\n\n<i>Your custom 75 Hard reminder.</i>`;
+      try {
+        await sendWithAppButton(r.chat_id, msg, APP_URL);
+        sent++;
+      } catch (err) {
+        console.error(`[cron] custom failed for ${r.chat_id}:`, err.message);
+        failed++;
+      }
+    }
+  }
 
   console.log(`[cron] IST ${istHour}:00 — sent: ${sent}, failed: ${failed}`);
   return res.status(200).json({ ok: true, istHour, sent, failed });
