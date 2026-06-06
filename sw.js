@@ -1,7 +1,7 @@
 // sw.js — 75 Hard PWA Service Worker
 // Cache strategy: cache-first for app shell, network-first for icons CDN
 
-const CACHE_NAME = '75hard-v1';
+const CACHE_NAME = '75hard-v2';
 
 // Files that make up the app shell (all served locally)
 const APP_SHELL = [
