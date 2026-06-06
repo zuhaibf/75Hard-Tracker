@@ -4,9 +4,9 @@
     { "source": "/", "destination": "/track.html" }
   ],
   "functions": {
-    "api/webhook.js":   { "maxDuration": 10 },
-    "api/cron.js":      { "maxDuration": 30 },
-    "api/setup.js":     { "maxDuration": 10 },
-    "api/reminders.js": { "maxDuration": 10 }
+    "api/webhook.js":  { "maxDuration": 10 },
+    "api/cron.js":     { "maxDuration": 30 },
+    "api/setup.js":    { "maxDuration": 10 },
+    "api/reminder.js": { "maxDuration": 10 }
   }
 }
