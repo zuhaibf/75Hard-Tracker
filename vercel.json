@@ -6,30 +6,13 @@
   "crons": [
     {
       "path": "/api/cron",
-      "schedule": "30 1 * * *"
-    },
-    {
-      "path": "/api/cron",
-      "schedule": "30 6 * * *"
-    },
-    {
-      "path": "/api/cron",
-      "schedule": "30 12 * * *"
-    },
-    {
-      "path": "/api/cron",
-      "schedule": "30 15 * * *"
+      "schedule": "0 * * * *"
     }
   ],
   "functions": {
-    "api/webhook.js": {
-      "maxDuration": 10
-    },
-    "api/cron.js": {
-      "maxDuration": 30
-    },
-    "api/setup.js": {
-      "maxDuration": 10
-    }
+    "api/webhook.js":   { "maxDuration": 10 },
+    "api/cron.js":      { "maxDuration": 30 },
+    "api/setup.js":     { "maxDuration": 10 },
+    "api/reminders.js": { "maxDuration": 10 }
   }
 }
