@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#0d1a0d"/>
+<meta name="theme-color" content="#000000"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
 <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png"/>
 <title>75 Hard</title>
+<link rel="manifest" href="manifest.json"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -43,8 +44,17 @@
   --p-teal:#21b788;
   --p-orange:#de8236;
   --p-muted:#6f7680;
+  /* nav pill height for bottom padding calc */
+  --nav-h:64px;
+  --nav-bottom:max(16px, env(safe-area-inset-bottom));
 }
-html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
+html,body{
+  height:100%;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+  overflow:hidden;
+}
 
 /* ── APP SHELL ── */
 #app{
@@ -54,23 +64,16 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
   position:relative;
 }
 
-/* ── PAGES ──
-   Sits below the status bar (safe-area-inset-top) and above the fixed nav.
-   Nav height ≈ 50px icon+label + env(safe-area-inset-bottom).
-   We use a generous fixed bottom so content is never hidden. */
+/* ── PAGES ── fills full height, content scrolls inside */
 #pages{
   position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
+  inset:0;
   overflow:hidden;
 }
 .page{
   position:absolute;
   inset:0;
   overflow-y:auto;
-  /* iOS momentum scrolling */
   -webkit-overflow-scrolling:touch;
   transition:opacity .2s,transform .2s;
   opacity:0;
@@ -78,34 +81,57 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
   transform:translateY(6px);
 }
 .page.active{opacity:1;pointer-events:all;transform:translateY(0)}
+
 .page-inner{
-  padding:20px 16px;
-  /* top: clear the status bar */
-  padding-top:calc(env(safe-area-inset-top) + 16px);
-  /* bottom: clear the fixed nav (≈50px) + home-indicator + breathing room */
-  padding-bottom:calc(50px + env(safe-area-inset-bottom) + 24px);
+  /* top: clear status bar */
+  padding-top:calc(env(safe-area-inset-top) + 20px);
+  padding-left:16px;
+  padding-right:16px;
+  /* bottom: clear floating nav pill + its bottom gap + breathing room */
+  padding-bottom:calc(var(--nav-h) + var(--nav-bottom) + 24px);
   min-height:100%;
 }
 
-/* ── NAV — fixed to bottom of screen, always flush ── */
+/* ── FLOATING PILL NAV ──
+   Sits above the home indicator — never touches the screen edge.
+   No safe-area padding needed here; the gap IS the safe area buffer. */
 #nav{
   position:fixed;
-  bottom:0;
+  bottom:var(--nav-bottom);
   left:50%;
   transform:translateX(-50%);
-  width:100%;
-  max-width:430px;
+  width:calc(100% - 32px);
+  max-width:398px;
   display:flex;
-  background:rgba(0,0,0,0.96);
+  align-items:center;
+  justify-content:space-around;
+  background:rgba(8,8,8,0.96);
   backdrop-filter:blur(24px);
   -webkit-backdrop-filter:blur(24px);
-  border-top:1px solid var(--border);
-  /* 8px above the icons, then exactly the safe-area below — no extra gap */
-  padding:8px 0 env(safe-area-inset-bottom);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:10px 8px;
+  height:var(--nav-h);
   z-index:100;
 }
 
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:none;background:none;color:var(--txt3);cursor:pointer;transition:color .2s;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.nav-btn{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  padding:4px 2px;
+  border:none;
+  background:none;
+  color:var(--txt3);
+  cursor:pointer;
+  transition:color .2s;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
 .nav-btn.active{color:var(--neon)}
 .nav-btn i{font-size:20px}
 
@@ -215,6 +241,31 @@ input[type="date"].input{-webkit-appearance:none;appearance:none;max-width:100%}
 .photo-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-top:8px}
 .photo-thumb{width:72px;height:72px;border-radius:var(--r2);object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
 
+/* ── TOAST — sits above the nav pill ── */
+#toast{
+  position:fixed;
+  bottom:calc(var(--nav-h) + var(--nav-bottom) + 12px);
+  left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--bg4);
+  border:1px solid var(--neonborder);
+  color:var(--neon);
+  padding:10px 20px;
+  border-radius:99px;
+  font-size:11px;
+  font-weight:900;
+  z-index:300;
+  transition:all .25s;
+  opacity:0;
+  pointer-events:none;
+  white-space:nowrap;
+  max-width:90vw;
+  text-align:center;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 .pop{animation:pop .22s ease}
 </style>
@@ -222,12 +273,14 @@ input[type="date"].input{-webkit-appearance:none;appearance:none;max-width:100%}
 <body>
 <div id="app">
   <div id="pages">
-    <div class="page active" id="p-today"><div class="page-inner" id="today-content"></div></div>
-    <div class="page" id="p-progress"><div class="page-inner" id="progress-content"></div></div>
-    <div class="page" id="p-stats"><div class="page-inner" id="stats-content"></div></div>
-    <div class="page" id="p-photos"><div class="page-inner" id="photos-content"></div></div>
-    <div class="page" id="p-settings"><div class="page-inner" id="settings-content"></div></div>
+    <div class="page active" id="p-today">   <div class="page-inner" id="today-content"></div></div>
+    <div class="page"        id="p-progress"><div class="page-inner" id="progress-content"></div></div>
+    <div class="page"        id="p-stats">   <div class="page-inner" id="stats-content"></div></div>
+    <div class="page"        id="p-photos">  <div class="page-inner" id="photos-content"></div></div>
+    <div class="page"        id="p-settings"><div class="page-inner" id="settings-content"></div></div>
   </div>
+
+  <!-- FLOATING PILL NAV -->
   <nav id="nav">
     <button class="nav-btn active" data-page="today"    onclick="nav('today')">   <i class="ti ti-bolt"></i>Today</button>
     <button class="nav-btn"        data-page="progress" onclick="nav('progress')"><i class="ti ti-chart-line"></i>Progress</button>
@@ -236,6 +289,8 @@ input[type="date"].input{-webkit-appearance:none;appearance:none;max-width:100%}
     <button class="nav-btn"        data-page="settings" onclick="nav('settings')"><i class="ti ti-settings"></i>Settings</button>
   </nav>
 </div>
+
+<div id="toast"></div>
 
 <div class="overlay" id="overlay" onclick="closeModal(event)">
   <div class="modal" id="modal"><div class="modal-handle"></div><div id="modal-body"></div></div>
@@ -314,7 +369,7 @@ render.today=function(){
   const dd=td(),dn=dayNum(),str=streak(),done=countDone(dd);
   if(!S.startDate){
     document.getElementById('today-content').innerHTML=`
-    <div style="text-align:center;padding:50px 0 32px">
+    <div style="text-align:center;padding:40px 0 32px">
       <div class="lbl" style="margin-bottom:10px">75 Hard Challenge</div>
       <div style="font-size:52px;font-weight:900;color:var(--neon);line-height:1;margin-bottom:10px">STAY<br>HARD.</div>
       <p style="font-size:13px;color:var(--txt2);margin-bottom:28px;line-height:1.7">No substitutions. No modifications.<br>No excuses. 75 days of discipline.</p>
@@ -443,7 +498,6 @@ render.progress=function(){
       <div class="lbl" style="color:var(--p-muted)">Streak</div>
     </div>
   </div>
-
   <div style="background:var(--p-card);border:1px solid rgba(199,255,51,0.12);border-radius:var(--r);padding:18px;margin-bottom:10px">
     <div class="lbl" style="margin-bottom:10px;color:var(--p-muted)">Time Remaining</div>
     <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px">
@@ -467,7 +521,6 @@ render.progress=function(){
       <span style="font-size:12px;font-weight:800;color:var(--p-teal)">On Track</span>
     </div>
   </div>
-
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
     <div class="stat-box active" style="background:var(--p-card);border-color:rgba(199,255,51,0.3)">
       <div class="stat-num" style="color:var(--p-lime)">${dn}</div>
@@ -482,7 +535,6 @@ render.progress=function(){
       <div class="stat-lbl" style="color:var(--p-muted)">Remain</div>
     </div>
   </div>
-
   <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
     <div class="lbl" style="font-size:11px;letter-spacing:2px;color:var(--p-muted)">Wall of Discipline</div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -494,35 +546,13 @@ render.progress=function(){
   <div style="background:var(--p-card);border:1px solid rgba(199,255,51,0.08);border-radius:var(--r);padding:14px">
     <div class="wall-grid">${wallHtml}</div>
   </div>
-
   <div class="sec"><i class="ti ti-bolt"></i>Lifetime Aggregates</div>
   <div class="agg-grid">
-    <div class="agg-box">
-      <div class="agg-icon">⚡ Total Sweat</div>
-      <div class="agg-num">${totalW}</div>
-      <div class="agg-total">of ${dn*2} Workouts</div>
-      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalW/(dn*2)*100,100):0}%;background:var(--p-lime)"></div></div>
-    </div>
-    <div class="agg-box">
-      <div class="agg-icon">💧 Hydration</div>
-      <div class="agg-num">${(totalWater/1000).toFixed(0)}</div>
-      <div class="agg-total">of ${dn*4} Litres</div>
-      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalWater/(dn*4000)*100,100):0}%;background:var(--p-teal)"></div></div>
-    </div>
-    <div class="agg-box">
-      <div class="agg-icon">📚 Knowledge</div>
-      <div class="agg-num">${totalPages}</div>
-      <div class="agg-total">of ${dn*10} Pages</div>
-      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalPages/(dn*10)*100,100):0}%;background:var(--p-green)"></div></div>
-    </div>
-    <div class="agg-box">
-      <div class="agg-icon">⚡ Consistency</div>
-      <div class="agg-num">${consistPct}%</div>
-      <div class="agg-total">Task Rate</div>
-      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${consistPct}%;background:var(--p-orange)"></div></div>
-    </div>
+    <div class="agg-box"><div class="agg-icon">⚡ Total Sweat</div><div class="agg-num">${totalW}</div><div class="agg-total">of ${dn*2} Workouts</div><div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalW/(dn*2)*100,100):0}%;background:var(--p-lime)"></div></div></div>
+    <div class="agg-box"><div class="agg-icon">💧 Hydration</div><div class="agg-num">${(totalWater/1000).toFixed(0)}</div><div class="agg-total">of ${dn*4} Litres</div><div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalWater/(dn*4000)*100,100):0}%;background:var(--p-teal)"></div></div></div>
+    <div class="agg-box"><div class="agg-icon">📚 Knowledge</div><div class="agg-num">${totalPages}</div><div class="agg-total">of ${dn*10} Pages</div><div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalPages/(dn*10)*100,100):0}%;background:var(--p-green)"></div></div></div>
+    <div class="agg-box"><div class="agg-icon">⚡ Consistency</div><div class="agg-num">${consistPct}%</div><div class="agg-total">Task Rate</div><div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${consistPct}%;background:var(--p-orange)"></div></div></div>
   </div>
-
   <div class="sec"><i class="ti ti-list-check"></i>Task Completion Rate</div>
   <div class="card" style="background:var(--p-card);border-color:rgba(199,255,51,0.08)">
     ${taskRates.map(t=>`
@@ -533,10 +563,8 @@ render.progress=function(){
       <span style="font-size:10px;color:var(--p-muted);font-weight:800;min-width:34px;text-align:right">${t.done}/${totalDays}</span>
     </div>`).join('')}
   </div>
-
   <div class="sec"><i class="ti ti-flag"></i>Phase Milestones</div>
   <div class="card" style="background:var(--p-card);border-color:rgba(199,255,51,0.08)">${phasesHtml}</div>
-
   <div style="background:var(--p-card);border:1px solid rgba(199,255,51,0.1);border-radius:var(--r);padding:16px;margin-top:10px;text-align:center">
     <div style="font-size:13px;font-weight:900;letter-spacing:1.5px;color:var(--p-lime);margin-bottom:4px;text-transform:uppercase">Stay Hard.</div>
     <div style="font-size:12px;color:var(--p-muted)">${daysLeft()} days of discipline between you and who you could be.</div>
@@ -658,33 +686,28 @@ render.settings=function(){
         <div style="font-size:11px;color:var(--txt3)">4 daily reminders — 7am, 12pm, 6pm, 9pm</div>
       </div>
     </div>
-    <div style="background:var(--bg4);border-radius:var(--r2);padding:14px;margin-bottom:14px">
-      <div class="lbl" style="margin-bottom:10px">How to Connect</div>
-      ${[['1','Search Telegram for <span style="color:var(--neon);font-weight:800">@my75hard_bot</span>'],
-         ['2','Send this command to the bot:'],
-         ['✓','Done! Reminders start immediately.']].map(([n,t],i)=>`
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:${i<2?'10px':'0'}">
-        <div style="width:20px;height:20px;border-radius:50%;background:${n==='✓'?'var(--neon)':'var(--bg5)'};border:${n==='✓'?'none':'1px solid var(--border2)'};color:${n==='✓'?'#000':'var(--txt2)'};font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
-        <div style="font-size:12px;color:var(--txt2)">${t}</div>
+    <div style="background:var(--bg4);border-radius:var(--r2);padding:12px;margin-bottom:12px">
+      <div class="lbl" style="margin-bottom:8px">How to Connect</div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--bg5);border:1px solid var(--border2);color:var(--txt2);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+        <div style="font-size:12px;color:var(--txt2)">Search Telegram for <span style="color:var(--neon);font-weight:800">@my75hard_bot</span></div>
       </div>
-      ${i===1?`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 12px;margin:8px 0 0 30px;display:flex;align-items:center;gap:8px">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--bg5);border:1px solid var(--border2);color:var(--txt2);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+        <div style="font-size:12px;color:var(--txt2)">Send this command:</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 12px;margin:0 0 8px 30px;display:flex;align-items:center;gap:8px">
         <code style="font-size:11px;color:var(--neon);flex:1;word-break:break-all">/start ${getToken()}</code>
         <button onclick="copyCmd()" style="background:none;border:none;color:var(--txt3);cursor:pointer;padding:2px"><i class="ti ti-copy" style="font-size:15px"></i></button>
-      </div>`:''}
-      `).join('')}
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--neon);color:#000;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
+        <div style="font-size:12px;color:var(--txt2)">Done! Reminders start immediately.</div>
+      </div>
     </div>
     <a href="https://t.me/my75hard_bot" target="_blank" class="btn btn-primary" style="text-decoration:none;display:flex;background:rgba(42,171,238,0.15);color:#2AABEE;border:1px solid rgba(42,171,238,0.35)">
       <i class="ti ti-brand-telegram"></i>Open @my75hard_bot
     </a>
-    <div style="background:var(--bg4);border-radius:var(--r2);padding:12px;margin-top:10px">
-      <div class="lbl" style="margin-bottom:8px">Reminder Schedule (IST)</div>
-      ${[['07:00','Morning check-in','ti-sun'],['12:00','Water check-in','ti-droplet'],['18:00','Outdoor workout check','ti-sun-2'],['21:00','Evening wrap-up','ti-checklist']].map(([t,m,ic])=>`
-      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
-        <i class="ti ${ic}" style="font-size:13px;color:var(--txt3);width:16px"></i>
-        <span style="color:#2AABEE;min-width:44px;font-weight:800">${t}</span>
-        <span style="color:var(--txt2)">${m}</span>
-      </div>`).join('')}
-    </div>
   </div>
   <div class="sec" style="color:var(--red)">Danger Zone</div>
   <div class="card">
@@ -803,17 +826,12 @@ function addConsequence(){S.consequences.push({id:'c'+Date.now(),text:'New conse
 function getToken(){if(!S._token){S._token='75H-'+Math.random().toString(36).slice(2,10).toUpperCase();save();}return S._token;}
 function copyCmd(){navigator.clipboard?.writeText('/start '+getToken()).then(()=>showToast('Command copied'));}
 
-let toastT;
 function showToast(msg){
-  let t=document.getElementById('toast');
-  if(!t){
-    t=document.createElement('div');t.id='toast';
-    t.style.cssText='position:fixed;bottom:calc(env(safe-area-inset-bottom) + 70px);left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg4);border:1px solid var(--neonborder);color:var(--neon);padding:10px 20px;border-radius:99px;font-size:11px;font-weight:900;z-index:300;transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;letter-spacing:1px;text-transform:uppercase';
-    document.body.appendChild(t);
-  }
-  t.textContent=msg;clearTimeout(toastT);
-  requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
-  toastT=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2500);
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2500);
 }
 
 render.today();
