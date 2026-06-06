@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#0f0f11"/>
+<meta name="theme-color" content="#110e0b"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="75 Hard"/>
@@ -15,22 +15,27 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0f0f11;--bg2:#1a1a1f;--bg3:#242429;--bg4:#2e2e35;
-  --txt:#f0f0f5;--txt2:#a0a0b0;--txt3:#606070;
-  --accent:#7c6cfc;--accent2:#a598fd;--accentbg:rgba(124,108,252,0.15);
+  --bg:#110e0b;--bg2:#1c1713;--bg3:#26211a;--bg4:#322b22;
+  --txt:#f5f0eb;--txt2:#b0a090;--txt3:#70604e;
+  --accent:#f97316;--accent2:#fdba74;--accentbg:rgba(249,115,22,0.15);
   --green:#4ade80;--greenbg:rgba(74,222,128,0.12);
   --red:#f87171;--redbg:rgba(248,113,113,0.12);
   --amber:#fbbf24;--amberbg:rgba(251,191,36,0.12);
   --blue:#60a5fa;--bluebg:rgba(96,165,250,0.12);
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
-  --r:14px;--r2:10px;--r3:20px;
+  --r:16px;--r2:12px;--r3:24px;
 }
 html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
 #app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
-#nav{display:flex;background:rgba(15,15,17,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100}
+#nav{display:flex;align-items:center;background:rgba(17,14,11,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100;position:relative}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border:none;background:none;color:var(--txt3);cursor:pointer;transition:color .2s;font-size:10px;font-weight:500;letter-spacing:0.3px}
 .nav-btn.active{color:var(--accent)}
 .nav-btn i{font-size:22px}
+.nav-fab-placeholder{pointer-events:none;visibility:hidden}
+.nav-fab{position:absolute;bottom:calc(50% + 4px);left:50%;transform:translateX(-50%);width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(249,115,22,0.45);transition:transform .15s,box-shadow .15s;z-index:10}
+.nav-fab i{font-size:26px}
+.nav-fab:active{transform:translateX(-50%) scale(0.93);box-shadow:0 2px 10px rgba(249,115,22,0.3)}
+.nav-fab.active{background:var(--accent2)}
 #pages{flex:1;overflow:hidden;position:relative}
 .page{position:absolute;inset:0;overflow-y:auto;transition:opacity .25s,transform .25s;opacity:0;pointer-events:none;transform:translateY(8px)}
 .page.active{opacity:1;pointer-events:all;transform:translateY(0)}
@@ -43,8 +48,8 @@ h3{font-size:15px;font-weight:600}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
 .card.glow{border-color:rgba(124,108,252,0.3);box-shadow:0 0 24px rgba(124,108,252,0.08)}
 .ring-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 0}
-.ring-track{fill:none;stroke:var(--bg3);stroke-width:10}
-.ring-fill{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+.ring-track{fill:none;stroke:var(--bg3);stroke-width:12}
+.ring-fill{fill:none;stroke:var(--accent);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
 .ring-label{text-anchor:middle;dominant-baseline:central;font-size:28px;font-weight:700;fill:var(--txt)}
 .ring-sub{text-anchor:middle;dominant-baseline:central;font-size:13px;fill:var(--txt2)}
 .task-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s;user-select:none}
@@ -56,15 +61,15 @@ h3{font-size:15px;font-weight:600}
 .task-name{font-size:14px;font-weight:600;margin-bottom:2px}
 .task-desc{font-size:12px;color:var(--txt3)}
 .task-time{font-size:11px;color:var(--green);margin-top:2px}
-.task-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s}
-.task-card.done .task-check{background:var(--green);border-color:var(--green)}
+.task-check{width:30px;height:30px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s}
+.task-card.done .task-check{background:var(--green);border-color:var(--green);width:30px;height:30px}
 .task-card.done .task-check i{color:var(--bg);font-size:14px}
 .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px;text-align:center}
 .stat-num{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
 .stat-lbl{font-size:11px;color:var(--txt3);letter-spacing:0.4px;text-transform:uppercase}
-.quote-card{background:var(--accentbg);border:1px solid rgba(124,108,252,0.2);border-radius:var(--r);padding:18px;margin-bottom:16px}
-.quote-text{font-size:15px;font-style:italic;line-height:1.6;color:var(--accent2);margin-bottom:8px}
+.quote-card{background:var(--accentbg);border:1px solid rgba(249,115,22,0.2);border-radius:var(--r);padding:18px;margin-bottom:16px}
+.quote-text{font-size:15px;font-style:italic;line-height:1.6;color:var(--accent2);margin-bottom:6px}
 .quote-author{font-size:12px;color:var(--txt3)}
 .water-visual{height:120px;background:var(--bg3);border-radius:var(--r2);overflow:hidden;position:relative;margin:12px 0}
 .water-fill{position:absolute;bottom:0;left:0;right:0;background:#1d6aff;transition:height .5s cubic-bezier(.4,0,.2,1);opacity:0.6}
@@ -146,14 +151,15 @@ h3{font-size:15px;font-weight:600}
     <button class="nav-btn" data-page="tasks" onclick="nav('tasks')">
       <i class="ti ti-checklist"></i>Tasks
     </button>
-    <button class="nav-btn" data-page="log" onclick="nav('log')">
-      <i class="ti ti-notebook"></i>Journal
-    </button>
+    <button class="nav-btn nav-fab-placeholder" aria-hidden="true"></button>
     <button class="nav-btn" data-page="stats" onclick="nav('stats')">
       <i class="ti ti-chart-bar"></i>Stats
     </button>
     <button class="nav-btn" data-page="settings" onclick="nav('settings')">
       <i class="ti ti-settings"></i>Settings
+    </button>
+    <button class="nav-fab" onclick="nav('log')" data-page="log" title="Journal">
+      <i class="ti ti-bolt"></i>
     </button>
   </nav>
 </div>
@@ -262,45 +268,40 @@ render.home=function(){
     </div>`).join('');
   if(remaining.length>3)remHtml+=`<div style="font-size:12px;color:var(--txt3);padding:8px 0">+${remaining.length-3} more tasks</div>`;
   document.getElementById('home-content').innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-      <div><h1 style="font-size:24px">Day ${dn}</h1><p class="smuted">${75-dn} days remaining</p></div>
-      <span class="chip ${str>0?'green':'amber'}">${str>0?`<i class="ti ti-flame"></i>${str} day streak`:'<i class="ti ti-flame"></i>Start streak'}</span>
-    </div>
-    <div class="ring-wrap">
-      <svg width="130" height="130" viewBox="0 0 130 130">
-        <circle class="ring-track" cx="65" cy="65" r="${R}" transform="rotate(-90 65 65)"/>
-        <circle class="ring-fill" cx="65" cy="65" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="${dash}" transform="rotate(-90 65 65)"/>
-        <text class="ring-label" x="65" y="60">${done}/${total}</text>
-        <text class="ring-sub" x="65" y="82">${prog===1?'COMPLETE':pct(dd)+'% done'}</text>
-      </svg>
-    </div>
-    <div class="stat-row">
-      <div class="stat-box"><div class="stat-num" style="color:var(--accent)">${dn}</div><div class="stat-lbl">Day</div></div>
-      <div class="stat-box"><div class="stat-num" style="color:var(--green)">${Math.round(pct(dd))}%</div><div class="stat-lbl">Today</div></div>
-    </div>
-    <div class="quote-card">
-      <div style="display:flex;gap:10px;align-items:flex-start">
-        <i class="ti ti-quote" style="font-size:20px;color:var(--accent);flex-shrink:0;margin-top:2px"></i>
-        <div><div class="quote-text">${q.text}</div><div class="quote-author">— ${q.author}</div></div>
+    <div style="padding-bottom:4px">
+      <div style="font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1;color:var(--txt)">Day ${dn}</div>
+      <div style="font-size:14px;color:var(--txt3);margin-top:4px;font-weight:500">${75-dn} days remaining</div>
+      <div style="height:3px;background:var(--bg3);border-radius:99px;margin-top:14px;overflow:hidden">
+        <div style="height:100%;width:${(dn/75*100).toFixed(1)}%;background:var(--accent);border-radius:99px;transition:width .4s ease"></div>
       </div>
     </div>
-    ${remaining.length===0?`
-    <div class="card glow" style="text-align:center;padding:20px">
-      <i class="ti ti-trophy" style="font-size:40px;color:var(--amber);display:block;margin-bottom:8px"></i>
-      <h3 style="color:var(--green);margin-bottom:4px">Day ${dn} Complete!</h3>
-      <p class="smuted">You crushed it. Rest up for tomorrow.</p>
-    </div>`:`
-    <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <h3>Still to do</h3>
-        <button class="btn btn-outline" style="width:auto;padding:6px 14px;font-size:12px" onclick="nav('tasks')">All Tasks <i class="ti ti-arrow-right" style="font-size:13px"></i></button>
+    <div style="display:flex;align-items:center;gap:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-top:14px">
+      <div style="position:relative;flex-shrink:0">
+        <svg width="90" height="90" viewBox="0 0 90 90">
+          <circle class="ring-track" cx="45" cy="45" r="38" transform="rotate(-90 45 45)"/>
+          <circle class="ring-fill" cx="45" cy="45" r="38" stroke-dasharray="${2*Math.PI*38}" stroke-dashoffset="${2*Math.PI*38*(1-prog)}" transform="rotate(-90 45 45)"/>
+          <text style="font-size:18px;font-weight:800;fill:var(--txt);text-anchor:middle;dominant-baseline:central" x="45" y="41">${done}/${total}</text>
+          <text style="font-size:10px;fill:var(--txt3);text-anchor:middle;dominant-baseline:central" x="45" y="57">done</text>
+        </svg>
       </div>
-      ${remHtml}
-    </div>`}
-    <div style="margin-top:12px">
-      <div class="section-head"><i class="ti ti-chart-line"></i>75-Day Progress</div>
-      <div class="pbar-wrap"><div class="pbar-fill" style="width:${(dn/75*100).toFixed(1)}%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-top:4px"><span>Day 1</span><span>Day 75</span></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--txt);line-height:1">${Math.round(pct(dd))}<span style="font-size:18px;font-weight:600">%</span> <span style="font-size:16px;font-weight:500;color:var(--txt2)">today</span></div>
+        <div style="font-size:13px;color:var(--txt3);margin-top:3px">${remaining.length===0?'All tasks done':'${remaining.length} task${remaining.length===1?"":"s"} remaining'}</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.25);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--accent)">${remaining.length===0?'Complete ✓':'On track'}</div>
+      </div>
+    </div>
+    <div style="background:var(--bg3);border-radius:var(--r);padding:14px 16px;margin-top:10px">
+      <div style="font-size:13px;font-style:italic;color:var(--accent2);line-height:1.5;margin-bottom:4px">"${q.text}"</div>
+      <div style="font-size:11px;color:var(--txt3)">— ${q.author}</div>
+    </div>
+    <div style="margin-top:14px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);margin-bottom:10px">TODAY'S TASKS</div>
+      ${TASKS_DEF.map(t=>{const isDone=!!dd.tasks[t.id];return `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="nav('tasks')">
+        <div style="width:10px;height:10px;border-radius:50%;background:${t.color};flex-shrink:0"></div>
+        <span style="flex:1;font-size:15px;font-weight:600;color:${isDone?'var(--txt3)':'var(--txt)'};${isDone?'text-decoration:line-through;':''}">${t.name}</span>
+        <div style="width:28px;height:28px;border-radius:50%;background:${isDone?'var(--green)':'transparent'};border:2px solid ${isDone?'var(--green)':'var(--border2)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s">${isDone?`<i class="ti ti-check" style="font-size:14px;color:var(--bg)"></i>`:''}</div>
+      </div>`}).join('')}
     </div>`;
 };
 
