@@ -46,21 +46,42 @@
   --p-muted:#6f7680;
 }
 html{height:100%}
-body{height:100%;padding-top:env(safe-area-inset-top);box-sizing:border-box;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
+body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
 
-/* ── App shell: height:100% chain is more reliable than dvh/fixed in iOS standalone ── */
+/* App shell — simple full-height container */
 #app{
   height:100%;
-  display:flex;
-  flex-direction:column;
   max-width:430px;
   margin:0 auto;
+  position:relative;
+  padding-top:env(safe-area-inset-top);
 }
 
-/* NAV — sits at natural flex bottom, background fills to physical screen edge */
+/* Pages scroll area — leaves room for the fixed nav at bottom */
+#pages{
+  position:absolute;
+  top:env(safe-area-inset-top);
+  left:0;
+  right:0;
+  bottom:0;
+  overflow:hidden;
+}
+.page-inner{
+  padding:20px 16px;
+  /* leave room above the fixed nav so content isn't hidden behind it */
+  padding-bottom:calc(64px + env(safe-area-inset-bottom) + 16px);
+  min-height:100%;
+}
+
+/* NAV — pinned to the actual bottom of the screen (most reliable in iOS PWA) */
 #nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  max-width:430px;
+  margin:0 auto;
   display:flex;
-  flex-shrink:0;
   z-index:100;
   background:#000;
   border-top:1px solid var(--border2);
@@ -71,10 +92,8 @@ body{height:100%;padding-top:env(safe-area-inset-top);box-sizing:border-box;back
 .nav-btn.active{color:var(--neon)}
 .nav-btn i{font-size:20px}
 /* PAGES */
-#pages{flex:1;min-height:0;overflow:hidden;position:relative}
 .page{position:absolute;inset:0;overflow-y:auto;transition:opacity .2s,transform .2s;opacity:0;pointer-events:none;transform:translateY(6px)}
 .page.active{opacity:1;pointer-events:all;transform:translateY(0)}
-.page-inner{padding:20px 16px 32px;min-height:100%}
 /* CARDS */
 .card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
 /* TASK CARDS */
