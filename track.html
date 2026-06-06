@@ -29,7 +29,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 /* PWA status bar fill */
 @supports(padding-top: env(safe-area-inset-top)){body{background:var(--bg)}}
 #app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;padding-top:env(safe-area-inset-top)}
-#nav{display:flex;align-items:center;background:rgba(17,14,11,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 0;padding-bottom:max(8px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100;position:relative}
+#nav{display:flex;align-items:flex-start;background:rgba(17,14,11,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 0;padding-bottom:max(8px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100;position:relative}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border:none;background:none;color:var(--txt3);cursor:pointer;transition:color .2s;font-size:10px;font-weight:500;letter-spacing:0.3px}
 .nav-btn.active{color:var(--accent)}
 .nav-btn i{font-size:22px}
@@ -120,7 +120,8 @@ h3{font-size:15px;font-weight:600}
 .btn-primary{background:var(--accent);color:white}
 .btn-danger{background:var(--redbg);border:1px solid rgba(248,113,113,0.3);color:var(--red)}
 .btn-outline{background:transparent;border:1px solid var(--border2);color:var(--txt)}
-.input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);color:var(--txt);font-size:15px;padding:12px 14px;width:100%;font-family:inherit}
+.input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);color:var(--txt);font-size:15px;padding:12px 14px;width:100%;max-width:100%;box-sizing:border-box;font-family:inherit}
+input[type="date"].input{-webkit-appearance:none;appearance:none;min-width:0}
 .input:focus{outline:none;border-color:var(--accent)}
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 .pop{animation:pop .3s ease}
