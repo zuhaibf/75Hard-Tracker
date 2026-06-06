@@ -11,33 +11,53 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0e0e0e;
-  --bg2:#141414;
-  --bg3:#1a1f1a;
-  --bg4:#1f261f;
-  --bg5:#242c24;
-  --txt:#e8f0e8;
-  --txt2:#7a9a7a;
-  --txt3:#4a6a4a;
-  --neon:#c8ff00;
-  --neon2:#b0e800;
-  --neonbg:rgba(200,255,0,0.08);
-  --neonborder:rgba(200,255,0,0.3);
-  --neonborderlo:rgba(200,255,0,0.15);
-  --amber:#e8820c;
-  --amberbg:rgba(232,130,12,0.12);
-  --red:#ff4040;
-  --redbg:rgba(255,64,64,0.08);
-  --redborder:rgba(255,64,64,0.25);
-  --blue:#38bdf8;
-  --border:rgba(200,255,0,0.07);
-  --border2:rgba(200,255,0,0.13);
+  --bg:#000000;
+  --bg2:#080808;
+  --bg3:#0f140f;
+  --bg4:#141a14;
+  --bg5:#1a221a;
+  --txt:#d0cfde;
+  --txt2:#7f868e;
+  --txt3:#37532a;
+  --neon:#c0f631;
+  --neon2:#bff834;
+  --neonbg:rgba(192,246,49,0.08);
+  --neonborder:rgba(192,246,49,0.3);
+  --neonborderlo:rgba(192,246,49,0.15);
+  --amber:#eb8939;
+  --amberbg:rgba(235,137,57,0.12);
+  --red:#eb8939;
+  --redbg:rgba(235,137,57,0.08);
+  --redborder:rgba(235,137,57,0.25);
+  --blue:#1db588;
+  --border:rgba(192,246,49,0.07);
+  --border2:rgba(192,246,49,0.13);
   --r:14px;--r2:10px;
+  /* progress palette */
+  --p-lime:#c7ff33;
+  --p-green:#84bc39;
+  --p-bg:#0b0f08;
+  --p-card:#1b2610;
+  --p-mid:#334d2a;
+  --p-teal:#21b788;
+  --p-orange:#de8236;
+  --p-muted:#6f7680;
 }
 html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;overflow:hidden}
-#app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
-/* NAV */
-#nav{display:flex;background:rgba(13,26,13,0.97);backdrop-filter:blur(20px);border-top:1px solid var(--border2);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100}
+
+/* ── PWA FIX: push content below notch/Dynamic Island ── */
+#app{
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  max-width:430px;
+  margin:0 auto;
+  position:relative;
+  padding-top:env(safe-area-inset-top);
+}
+
+/* NAV — flush at bottom, clears home indicator */
+#nav{display:flex;background:rgba(0,0,0,0.97);backdrop-filter:blur(20px);border-top:1px solid var(--border2);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:none;background:none;color:var(--txt3);cursor:pointer;transition:color .2s;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
 .nav-btn.active{color:var(--neon)}
 .nav-btn i{font-size:20px}
@@ -50,7 +70,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
 /* TASK CARDS */
 .task-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:16px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .18s;user-select:none}
-.task-card.done{border-color:var(--neonborder);background:rgba(200,255,0,0.04)}
+.task-card.done{border-color:var(--neonborder);background:rgba(192,246,49,0.04)}
 .task-card:active{transform:scale(0.985)}
 .task-chk{width:40px;height:40px;border-radius:10px;border:2px solid var(--neonborder);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;background:transparent}
 .task-card.done .task-chk{background:var(--neon);border-color:var(--neon)}
@@ -63,7 +83,7 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 /* PILL */
 .pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;border:2px solid;flex-shrink:0}
 .pill-neon{background:transparent;color:var(--neon);border-color:var(--neonborder)}
-.pill-blue{background:rgba(56,189,248,0.1);color:var(--blue);border-color:rgba(56,189,248,0.35)}
+.pill-blue{background:rgba(29,181,136,0.1);color:var(--blue);border-color:rgba(29,181,136,0.35)}
 .pill-dim{background:var(--bg4);color:var(--txt3);border-color:var(--border2)}
 .pill-red{background:var(--redbg);color:var(--red);border-color:var(--redborder)}
 /* PROGRESS BAR */
@@ -77,9 +97,9 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 /* WALL */
 .wall-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:10px 0}
 .wall-cell{aspect-ratio:1;border-radius:7px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--bg)}
-.wall-cell.done{background:var(--neon)}
-.wall-cell.today{background:transparent;border:2px solid var(--neon);color:var(--neon)}
-.wall-cell.missed{background:rgba(255,64,64,0.15);border:1px solid var(--redborder);color:var(--red)}
+.wall-cell.done{background:var(--p-lime)}
+.wall-cell.today{background:transparent;border:2px solid var(--p-lime);color:var(--p-lime)}
+.wall-cell.missed{background:rgba(222,130,54,0.15);border:1px solid rgba(222,130,54,0.3);color:var(--p-orange)}
 .wall-cell.future{background:var(--bg4);border:1px solid var(--border);color:transparent}
 /* AGGREGATES */
 .agg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
@@ -91,32 +111,32 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 .phase-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
 .phase-item:last-child{border-bottom:none}
 .phase-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.phase-dot.done{background:var(--neon)}
-.phase-dot.active{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.phase-dot.done{background:var(--p-lime)}
+.phase-dot.active{background:var(--p-orange);box-shadow:0 0 8px var(--p-orange)}
 .phase-dot.locked{background:var(--bg5);border:2px solid var(--border2)}
 /* BADGE */
 .badge{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:12px 6px;text-align:center}
-.badge.unlocked{border-color:rgba(232,130,12,0.4);background:rgba(232,130,12,0.06)}
+.badge.unlocked{border-color:rgba(235,137,57,0.4);background:rgba(235,137,57,0.06)}
 .badge-icon i{font-size:24px;color:var(--txt3);opacity:0.3}
 .badge.unlocked .badge-icon i{color:var(--amber);opacity:1}
 .badge-name{font-size:9px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:0.4px;margin-top:5px}
 .badge-day{font-size:9px;color:var(--txt3);margin-top:1px}
 /* MODAL */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
 .overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:20px 20px 0 0;padding:20px;width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:85dvh;overflow-y:auto}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:20px 20px 0 0;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom));width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:85dvh;overflow-y:auto}
 .overlay.open .modal{transform:translateY(0)}
 .modal-handle{width:32px;height:3px;background:var(--bg5);border-radius:99px;margin:0 auto 16px}
 /* BTN */
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--r2);font-size:13px;font-weight:800;cursor:pointer;border:none;width:100%;transition:all .15s;letter-spacing:1px;text-transform:uppercase}
 .btn:active{transform:scale(0.97)}
-.btn-primary{background:var(--neon);color:var(--bg)}
+.btn-primary{background:var(--neon);color:#000}
 .btn-danger{background:var(--redbg);border:1px solid var(--redborder);color:var(--red)}
 .btn-outline{background:transparent;border:1px solid var(--border2);color:var(--txt)}
 .input{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r2);color:var(--txt);font-size:14px;padding:12px;width:100%;font-family:inherit}
 .input:focus{outline:none;border-color:var(--neon)}
 /* TAKE BTN */
-.take-btn{background:var(--neon);color:var(--bg);border:none;border-radius:var(--r2);padding:9px 14px;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1px;text-transform:uppercase;flex-shrink:0;transition:all .15s}
+.take-btn{background:var(--neon);color:#000;border:none;border-radius:var(--r2);padding:9px 14px;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1px;text-transform:uppercase;flex-shrink:0;transition:all .15s}
 .take-btn:active{transform:scale(0.95)}
 /* QUICK BTNS */
 .quick-btns{display:flex;gap:6px}
@@ -166,21 +186,22 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-s
 
 <script>
 const STORAGE_KEY='75hard_v4';
+// Diet + No Alcohol merged into one "Clean Eating" card (no cheat meals, no soda)
+// Workout 1 = Indoor (45 min), Workout 2 = Outdoor
 const TASKS=[
-  {id:'diet', icon:'ti-salad',   name:'Follow Diet',    desc:'No cheat meals. Stick to your plan.',   color:'#c8ff00'},
-  {id:'alc',  icon:'ti-ban',     name:'No Alcohol',     desc:'Zero exceptions. Zero excuses.',         color:'#ff6b6b'},
-  {id:'w1',   icon:'ti-barbell', name:'Workout 1',      desc:'Indoor — any exercise, min 45 min.',    color:'#c8ff00', pill:'45 MIN', pillStyle:'neon', hasOutdoor:true},
-  {id:'w2',   icon:'ti-run',     name:'Workout 2',      desc:'Outside only — walk, run, or train.',   color:'#38bdf8', pill:'OUTDOOR', pillStyle:'blue'},
-  {id:'water',icon:'ti-droplet', name:'Drink Water',    desc:'4 litres. No exceptions.',              color:'#38bdf8', isWater:true},
-  {id:'read', icon:'ti-book-2',  name:'Read 10 Pages',  desc:'Non-fiction only. No audiobooks.',      color:'#c8ff00'},
-  {id:'photo',icon:'ti-camera',  name:'Progress Photo', desc:'Daily body photo. Document the change.', color:'#e8820c', isPhoto:true},
+  {id:'diet', icon:'ti-salad',   name:'Clean Eating',   desc:'No cheat meals. No soda. Stick to your plan.',color:'#c0f631'},
+  {id:'w1',   icon:'ti-barbell', name:'Workout 1',      desc:'Indoor — any exercise, min 45 min.',          color:'#c0f631', pill:'45 MIN', pillStyle:'neon', hasOutdoor:true},
+  {id:'w2',   icon:'ti-run',     name:'Workout 2',      desc:'Outside only — walk, run, or train.',          color:'#1db588', pill:'OUTDOOR', pillStyle:'blue'},
+  {id:'water',icon:'ti-droplet', name:'Drink Water',    desc:'4 litres. No exceptions.',                    color:'#1db588', isWater:true},
+  {id:'read', icon:'ti-book-2',  name:'Read 10 Pages',  desc:'Non-fiction only. No audiobooks.',             color:'#c0f631'},
+  {id:'photo',icon:'ti-camera',  name:'Progress Photo', desc:'Daily body photo. Document the change.',       color:'#eb8939', isPhoto:true},
 ];
 const PHASES=[
-  {n:1,name:'The Foundation', days:'1–7',  desc:'7 days of zero compromise.',          start:1,end:7},
-  {n:2,name:'The Grind',      days:'8–21', desc:'Build momentum through resistance.',   start:8,end:21},
-  {n:3,name:'The Crucible',   days:'22–40',desc:'When most people quit.',               start:22,end:40},
-  {n:4,name:'The Forge',      days:'41–55',desc:'Identity transformation begins.',      start:41,end:55},
-  {n:5,name:'The Champion',   days:'56–75',desc:'You are not who you were.',            start:56,end:75},
+  {n:1,name:'The Foundation', days:'1–7',  desc:'7 days of zero compromise.',         start:1,end:7},
+  {n:2,name:'The Grind',      days:'8–21', desc:'Build momentum through resistance.',  start:8,end:21},
+  {n:3,name:'The Crucible',   days:'22–40',desc:'When most people quit.',              start:22,end:40},
+  {n:4,name:'The Forge',      days:'41–55',desc:'Identity transformation begins.',     start:41,end:55},
+  {n:5,name:'The Champion',   days:'56–75',desc:'You are not who you were.',           start:56,end:75},
 ];
 
 function def(){return{startDate:null,days:{},settings:{name:'Warrior'},consequences:[
@@ -194,7 +215,6 @@ function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(S));}catch{}
 function today(){return new Date().toISOString().slice(0,10);}
 function dayNum(){if(!S.startDate)return 0;const d=Math.floor((new Date(today())-new Date(S.startDate))/86400000)+1;return Math.min(Math.max(d,1),75);}
 
-// Always return a safe day data object
 function dayData(k){
   if(!S.days[k]||typeof S.days[k]!=='object')S.days[k]={tasks:{},water:0,pages:0,photos:[]};
   const dd=S.days[k];
@@ -259,12 +279,12 @@ render.today=function(){
     if(t.pill) pillHtml=`<span class="pill pill-${t.pillStyle}" style="margin-left:8px">${t.pill}</span>`;
     if(t.hasOutdoor){
       const io=!!dd.outdoor_w1;
-      pillHtml+=`<button onclick="event.stopPropagation();toggleOutdoor('w1')" style="background:${io?'rgba(56,189,248,0.12)':'var(--bg4)'};border:1px solid ${io?'rgba(56,189,248,0.35)':'var(--border2)'};border-radius:6px;padding:3px 9px;cursor:pointer;font-size:10px;font-weight:800;color:${io?'#38bdf8':'var(--txt3)'};margin-left:6px;text-transform:uppercase;letter-spacing:0.5px;transition:all .15s">${io?'OUTDOOR':'INDOOR'}</button>`;
+      pillHtml+=`<button onclick="event.stopPropagation();toggleOutdoor('w1')" style="background:${io?'rgba(29,181,136,0.12)':'var(--bg4)'};border:1px solid ${io?'rgba(29,181,136,0.35)':'var(--border2)'};border-radius:6px;padding:3px 9px;cursor:pointer;font-size:10px;font-weight:800;color:${io?'#1db588':'var(--txt3)'};margin-left:6px;text-transform:uppercase;letter-spacing:0.5px;transition:all .15s">${io?'OUTDOOR':'INDOOR'}</button>`;
     }
     let rightEl='';
     if(t.isWater){
-      const wl=(dd.water/1000).toFixed(1),wpct=Math.min(dd.water/4000*100,100);
-      rightEl=`<div style="font-size:11px;font-weight:900;color:#38bdf8;flex-shrink:0;min-width:40px;text-align:right">${wl}/4L</div>`;
+      const wl=(dd.water/1000).toFixed(1);
+      rightEl=`<div style="font-size:11px;font-weight:900;color:#1db588;flex-shrink:0;min-width:40px;text-align:right">${wl}/4L</div>`;
     }
     if(t.isPhoto&&!done2) rightEl=`<button class="take-btn" onclick="event.stopPropagation();document.getElementById('photo-input').click()">TAKE</button>`;
     return `<div class="task-card ${done2?'done':''}" onclick="toggleTask('${t.id}')" id="task-${t.id}">
@@ -312,7 +332,7 @@ render.progress=function(){
   const donePct=Math.round(dn/75*100);
   const consistPct=totalDays>0?Math.round(perfDays/totalDays*100):0;
 
-  // Wall cells (75, 8 cols → 10 rows with 3 leftover)
+  // Wall cells (75, 8 cols)
   let wallHtml='';
   for(let i=1;i<=75;i++){
     let cls='wall-cell ';
@@ -341,7 +361,7 @@ render.progress=function(){
     const isDone=dn>p.end,isActive=dn>=p.start&&dn<=p.end;
     const dotCls=isDone?'done':isActive?'active':'locked';
     const badge=isDone?`<span class="pill pill-neon" style="font-size:9px;padding:2px 7px">COMPLETE</span>`:
-                isActive?`<span class="pill" style="font-size:9px;padding:2px 7px;background:var(--amberbg);color:var(--amber);border-color:rgba(232,130,12,0.4)">IN PROGRESS</span>`:
+                isActive?`<span class="pill" style="font-size:9px;padding:2px 7px;background:var(--amberbg);color:var(--amber);border-color:rgba(235,137,57,0.4)">IN PROGRESS</span>`:
                 `<span class="pill pill-dim" style="font-size:9px;padding:2px 7px">LOCKED</span>`;
     return `<div class="phase-item">
       <div class="phase-dot ${dotCls}" style="margin-top:6px"></div>
@@ -365,64 +385,64 @@ render.progress=function(){
   <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
     <div style="font-size:44px;font-weight:900;line-height:1;letter-spacing:-1px">PROGRESS</div>
     <div style="text-align:right;padding-top:4px">
-      <div style="font-size:28px;font-weight:900;color:var(--neon);display:flex;align-items:center;gap:4px;justify-content:flex-end">
+      <div style="font-size:28px;font-weight:900;color:var(--p-lime);display:flex;align-items:center;gap:4px;justify-content:flex-end">
         <span style="font-size:22px">🔥</span>${str}
       </div>
-      <div class="lbl" style="color:var(--txt3)">Streak</div>
+      <div class="lbl" style="color:var(--p-muted)">Streak</div>
     </div>
   </div>
 
   <!-- TIME REMAINING HERO -->
-  <div style="background:var(--bg3);border:1px solid var(--neonborderlo);border-radius:var(--r);padding:18px;margin-bottom:10px">
-    <div class="lbl" style="margin-bottom:10px">Time Remaining</div>
+  <div style="background:var(--p-card);border:1px solid rgba(199,255,51,0.12);border-radius:var(--r);padding:18px;margin-bottom:10px">
+    <div class="lbl" style="margin-bottom:10px;color:var(--p-muted)">Time Remaining</div>
     <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px">
       <div style="display:flex;align-items:baseline;gap:10px">
-        <span style="font-size:64px;font-weight:900;color:var(--neon);line-height:1">${daysLeft()}</span>
+        <span style="font-size:64px;font-weight:900;color:var(--p-lime);line-height:1">${daysLeft()}</span>
         <div>
           <div style="font-size:18px;font-weight:800;color:var(--txt);text-transform:uppercase">Days</div>
-          <div style="font-size:14px;font-weight:700;color:var(--txt3);text-transform:uppercase">To Go</div>
+          <div style="font-size:14px;font-weight:700;color:var(--p-muted);text-transform:uppercase">To Go</div>
         </div>
       </div>
-      <div style="background:var(--bg4);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;text-align:center">
-        <div style="font-size:26px;font-weight:900;color:var(--neon);line-height:1">${donePct}%</div>
-        <div class="lbl" style="margin-top:3px">Done</div>
+      <div style="background:var(--p-mid);border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:26px;font-weight:900;color:var(--p-lime);line-height:1">${donePct}%</div>
+        <div class="lbl" style="margin-top:3px;color:var(--p-muted)">Done</div>
       </div>
     </div>
-    <div style="background:var(--bg5);border-radius:99px;height:5px;overflow:hidden;margin-bottom:8px">
-      <div style="height:100%;border-radius:99px;background:linear-gradient(90deg,var(--neon2),var(--neon));width:${donePct}%;transition:width .4s ease"></div>
+    <div style="background:var(--p-mid);border-radius:99px;height:5px;overflow:hidden;margin-bottom:8px">
+      <div style="height:100%;border-radius:99px;background:var(--p-teal);width:${donePct}%;transition:width .4s ease"></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:12px;color:var(--txt3);font-weight:600">Day ${dn} of 75</span>
-      <span style="font-size:12px;font-weight:800;color:var(--neon)">On Track</span>
+      <span style="font-size:12px;color:var(--p-muted);font-weight:600">Day ${dn} of 75</span>
+      <span style="font-size:12px;font-weight:800;color:var(--p-teal)">On Track</span>
     </div>
   </div>
 
   <!-- 3 STATS -->
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
-    <div class="stat-box active">
-      <div class="stat-num" style="color:var(--neon)">${dn}</div>
-      <div class="stat-lbl">Days In</div>
+    <div class="stat-box active" style="background:var(--p-card);border-color:rgba(199,255,51,0.3)">
+      <div class="stat-num" style="color:var(--p-lime)">${dn}</div>
+      <div class="stat-lbl" style="color:var(--p-muted)">Days In</div>
     </div>
-    <div class="stat-box">
+    <div class="stat-box" style="background:var(--p-card)">
       <div class="stat-num" style="display:flex;align-items:center;justify-content:center;gap:3px"><span style="font-size:20px">🔥</span>${str}</div>
-      <div class="stat-lbl">Streak</div>
+      <div class="stat-lbl" style="color:var(--p-muted)">Streak</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-num" style="color:var(--txt2)">${daysLeft()}</div>
-      <div class="stat-lbl">Remain</div>
+    <div class="stat-box" style="background:var(--p-card)">
+      <div class="stat-num" style="color:var(--p-muted)">${daysLeft()}</div>
+      <div class="stat-lbl" style="color:var(--p-muted)">Remain</div>
     </div>
   </div>
 
   <!-- WALL OF DISCIPLINE -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
-    <div class="lbl" style="font-size:11px;letter-spacing:2px">Wall of Discipline</div>
+    <div class="lbl" style="font-size:11px;letter-spacing:2px;color:var(--p-muted)">Wall of Discipline</div>
     <div style="display:flex;gap:8px;align-items:center">
-      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:var(--neon)"></div><span style="font-size:9px;color:var(--txt3)">Done</span></div>
-      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;border:2px solid var(--neon)"></div><span style="font-size:9px;color:var(--txt3)">Today</span></div>
-      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:var(--bg5);border:1px solid var(--border2)"></div><span style="font-size:9px;color:var(--txt3)">Ahead</span></div>
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:var(--p-lime)"></div><span style="font-size:9px;color:var(--p-muted)">Done</span></div>
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;border:2px solid var(--p-lime)"></div><span style="font-size:9px;color:var(--p-muted)">Today</span></div>
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:var(--p-mid)"></div><span style="font-size:9px;color:var(--p-muted)">Ahead</span></div>
     </div>
   </div>
-  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+  <div style="background:var(--p-card);border:1px solid rgba(199,255,51,0.08);border-radius:var(--r);padding:14px">
     <div class="wall-grid">${wallHtml}</div>
   </div>
 
@@ -433,47 +453,47 @@ render.progress=function(){
       <div class="agg-icon">⚡ Total Sweat</div>
       <div class="agg-num">${totalW}</div>
       <div class="agg-total">of ${dn*2} Workouts</div>
-      <div class="pbar-wrap"><div class="pbar-fill" style="width:${dn>0?Math.min(totalW/(dn*2)*100,100):0}%"></div></div>
+      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalW/(dn*2)*100,100):0}%;background:var(--p-lime)"></div></div>
     </div>
     <div class="agg-box">
       <div class="agg-icon">💧 Hydration</div>
       <div class="agg-num">${(totalWater/1000).toFixed(0)}</div>
       <div class="agg-total">of ${dn*4} Litres</div>
-      <div class="pbar-wrap"><div class="pbar-fill" style="width:${dn>0?Math.min(totalWater/(dn*4000)*100,100):0}%;background:#38bdf8"></div></div>
+      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalWater/(dn*4000)*100,100):0}%;background:var(--p-teal)"></div></div>
     </div>
     <div class="agg-box">
       <div class="agg-icon">📚 Knowledge</div>
       <div class="agg-num">${totalPages}</div>
       <div class="agg-total">of ${dn*10} Pages</div>
-      <div class="pbar-wrap"><div class="pbar-fill" style="width:${dn>0?Math.min(totalPages/(dn*10)*100,100):0}%"></div></div>
+      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${dn>0?Math.min(totalPages/(dn*10)*100,100):0}%;background:var(--p-green)"></div></div>
     </div>
     <div class="agg-box">
       <div class="agg-icon">⚡ Consistency</div>
       <div class="agg-num">${consistPct}%</div>
       <div class="agg-total">Task Rate</div>
-      <div class="pbar-wrap"><div class="pbar-fill" style="width:${consistPct}%;background:var(--amber)"></div></div>
+      <div class="pbar-wrap" style="background:var(--p-mid)"><div class="pbar-fill" style="width:${consistPct}%;background:var(--p-orange)"></div></div>
     </div>
   </div>
 
   <!-- TASK RATES -->
   <div class="sec"><i class="ti ti-list-check"></i>Task Completion Rate</div>
-  <div class="card">
+  <div class="card" style="background:var(--p-card);border-color:rgba(199,255,51,0.08)">
     ${taskRates.map(t=>`
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;last-child:margin-bottom:0">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <i class="ti ${t.icon}" style="font-size:13px;color:${t.color};width:16px;flex-shrink:0"></i>
-      <span style="font-size:11px;font-weight:800;flex:1;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.name}</span>
-      <div style="background:var(--bg5);border-radius:99px;height:4px;overflow:hidden;flex:2"><div style="height:100%;border-radius:99px;background:${t.color};width:${t.pct}%;transition:width .4s"></div></div>
-      <span style="font-size:10px;color:var(--txt3);font-weight:800;min-width:34px;text-align:right">${t.done}/${totalDays}</span>
+      <span style="font-size:11px;font-weight:800;flex:1;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt2)">${t.name}</span>
+      <div style="background:var(--p-mid);border-radius:99px;height:4px;overflow:hidden;flex:2"><div style="height:100%;border-radius:99px;background:${t.color};width:${t.pct}%;transition:width .4s"></div></div>
+      <span style="font-size:10px;color:var(--p-muted);font-weight:800;min-width:34px;text-align:right">${t.done}/${totalDays}</span>
     </div>`).join('')}
   </div>
 
   <!-- PHASE MILESTONES -->
   <div class="sec"><i class="ti ti-flag"></i>Phase Milestones</div>
-  <div class="card">${phasesHtml}</div>
+  <div class="card" style="background:var(--p-card);border-color:rgba(199,255,51,0.08)">${phasesHtml}</div>
 
-  <div style="background:var(--bg3);border:1px solid var(--neonborderlo);border-radius:var(--r);padding:16px;margin-top:10px;text-align:center">
-    <div style="font-size:13px;font-weight:900;letter-spacing:1.5px;color:var(--neon);margin-bottom:4px;text-transform:uppercase">Stay Hard.</div>
-    <div style="font-size:12px;color:var(--txt2)">${daysLeft()} days of discipline between you and who you could be.</div>
+  <div style="background:var(--p-card);border:1px solid rgba(199,255,51,0.1);border-radius:var(--r);padding:16px;margin-top:10px;text-align:center">
+    <div style="font-size:13px;font-weight:900;letter-spacing:1.5px;color:var(--p-lime);margin-bottom:4px;text-transform:uppercase">Stay Hard.</div>
+    <div style="font-size:12px;color:var(--p-muted)">${daysLeft()} days of discipline between you and who you could be.</div>
   </div>`;
 };
 
@@ -573,7 +593,7 @@ render.settings=function(){
   <div style="background:var(--redbg);border:1px solid var(--redborder);border-radius:var(--r);padding:16px;margin-bottom:10px">
     <div style="font-size:12px;color:var(--txt2);margin-bottom:12px;line-height:1.6">If you fail, these apply. The psychological cost drives adherence.</div>
     ${S.consequences.map((c,i)=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,64,64,0.1)">
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(235,137,57,0.1)">
       <i class="ti ${c.icon}" style="font-size:17px;color:var(--red);flex-shrink:0"></i>
       <span style="flex:1;font-size:13px;color:var(--txt2)">${c.text}</span>
       <button onclick="editConsequence(${i})" style="background:none;border:none;color:var(--txt3);cursor:pointer"><i class="ti ti-edit" style="font-size:16px"></i></button>
@@ -597,7 +617,7 @@ render.settings=function(){
          ['2','Send this command to the bot:'],
          ['✓','Done! Reminders start immediately.']].map(([n,t],i)=>`
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:${i<2?'10px':'0'}">
-        <div style="width:20px;height:20px;border-radius:50%;background:${n==='✓'?'var(--neon)':'var(--bg5)'};border:${n==='✓'?'none':'1px solid var(--border2)'};color:${n==='✓'?'var(--bg)':'var(--txt2)'};font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
+        <div style="width:20px;height:20px;border-radius:50%;background:${n==='✓'?'var(--neon)':'var(--bg5)'};border:${n==='✓'?'none':'1px solid var(--border2)'};color:${n==='✓'?'#000':'var(--txt2)'};font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
         <div style="font-size:12px;color:var(--txt2)">${t}</div>
       </div>
       ${i===1?`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 12px;margin:8px 0 0 30px;display:flex;align-items:center;gap:8px">
@@ -651,19 +671,14 @@ function toggleOutdoor(id){
 }
 function openWaterModal(){
   const dd=td();
-  const update=()=>{
-    const wl=(dd.water/1000).toFixed(1);const pct=Math.min(dd.water/4000*100,100);
-    const nb=document.getElementById('wb');const np=document.getElementById('wp');
-    if(nb)nb.textContent=wl+'L';if(np)np.style.width=pct+'%';
-  };
   openModal(`
   <div style="font-size:18px;font-weight:900;margin-bottom:4px;text-transform:uppercase">Water Intake</div>
   <div style="font-size:12px;color:var(--txt2);margin-bottom:16px">Target: 4 litres per day</div>
   <div style="text-align:center;padding:10px 0 16px">
-    <div id="wb" style="font-size:48px;font-weight:900;color:#38bdf8">${(dd.water/1000).toFixed(1)}L</div>
+    <div id="wb" style="font-size:48px;font-weight:900;color:#1db588">${(dd.water/1000).toFixed(1)}L</div>
     <div style="font-size:11px;color:var(--txt3);margin-bottom:10px">of 4L goal</div>
     <div style="background:var(--bg5);border-radius:99px;height:6px;overflow:hidden">
-      <div id="wp" style="height:100%;border-radius:99px;background:#38bdf8;width:${Math.min(dd.water/4000*100,100)}%;transition:width .3s"></div>
+      <div id="wp" style="height:100%;border-radius:99px;background:#1db588;width:${Math.min(dd.water/4000*100,100)}%;transition:width .3s"></div>
     </div>
   </div>
   <div class="quick-btns" style="margin-bottom:8px">
@@ -706,7 +721,7 @@ function confirmReset(){
     <div style="font-size:18px;font-weight:900;color:var(--red);margin-bottom:8px">Reset to Day 1?</div>
     <p style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:16px">You're on Day ${dayNum()}. These consequences apply.</p>
     <div style="background:var(--redbg);border:1px solid var(--redborder);border-radius:var(--r);padding:12px;margin-bottom:16px;text-align:left">
-      ${S.consequences.map(c=>`<div style="display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,64,64,0.1);font-size:12px"><i class="ti ${c.icon}" style="color:var(--red)"></i><span style="color:var(--txt2)">${c.text}</span></div>`).join('')}
+      ${S.consequences.map(c=>`<div style="display:flex;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(235,137,57,0.1);font-size:12px"><i class="ti ${c.icon}" style="color:var(--red)"></i><span style="color:var(--txt2)">${c.text}</span></div>`).join('')}
     </div>
     <button class="btn btn-danger" style="margin-bottom:8px" onclick="doReset()"><i class="ti ti-refresh"></i>I Accept — Restart</button>
     <button class="btn btn-outline" onclick="forceClose()">Continue Challenge</button>
@@ -745,7 +760,7 @@ let toastT;
 function showToast(msg){
   let t=document.getElementById('toast');
   if(!t){t=document.createElement('div');t.id='toast';
-  t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg4);border:1px solid var(--neonborder);color:var(--neon);padding:10px 20px;border-radius:99px;font-size:11px;font-weight:900;z-index:300;transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;letter-spacing:1px;text-transform:uppercase';
+  t.style.cssText='position:fixed;bottom:calc(env(safe-area-inset-bottom) + 80px);left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg4);border:1px solid var(--neonborder);color:var(--neon);padding:10px 20px;border-radius:99px;font-size:11px;font-weight:900;z-index:300;transition:all .25s;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;letter-spacing:1px;text-transform:uppercase';
   document.body.appendChild(t);}
   t.textContent=msg;clearTimeout(toastT);
   requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
