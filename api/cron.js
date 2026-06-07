@@ -25,6 +25,9 @@ const BUILTIN = {
 };
 
 export default async function handler(req, res) {
+  if (!process.env.CRON_SECRET) {
+    return res.status(500).json({ error: 'CRON_SECRET env var is not set' });
+  }
   const authHeader = req.headers.authorization;
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorized' });
