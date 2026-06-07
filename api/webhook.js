@@ -4,7 +4,7 @@
 import { sendMessage, sendWithAppButton } from '../lib/telegram.js';
 import { linkToken, tokenForChat, unlinkChat } from '../lib/store.js';
 
-const APP_URL = process.env.APP_URL || 'https://7-hard-tracker.vercel.app/track.html';
+const APP_URL = process.env.APP_URL || 'https://75-hard-tracker.vercel.app/track.html';
 
 async function handleStart(chatId, args, firstName) {
   const token = args[0];
