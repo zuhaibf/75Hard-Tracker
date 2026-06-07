@@ -531,7 +531,7 @@ render.photos=function(){
   Object.keys(S.days).sort().reverse().forEach(k=>{
     const dd=S.days[k];
     const dn2=S.startDate?Math.floor((new Date(k)-new Date(S.startDate))/86400000)+1:1;
-    (dd?.photos||[]).forEach(src=>allPhotos.push({src,k,dn2}));
+    (dd?.photos||[]).forEach(p=>allPhotos.push({p,k,dn2}));
   });
   document.getElementById('photos-content').innerHTML=`
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
@@ -541,14 +541,18 @@ render.photos=function(){
   ${allPhotos.length===0
     ?`<div style="text-align:center;padding:60px 20px"><i class="ti ti-camera" style="font-size:48px;color:var(--txt3);display:block;margin-bottom:12px"></i><div style="font-size:14px;color:var(--txt2)">No photos yet.</div><div style="font-size:12px;color:var(--txt3);margin-top:4px">Take daily progress photos to track your transformation.</div></div>`
     :`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      ${allPhotos.map(p=>`
-      <div style="position:relative;cursor:pointer" onclick="showPhoto('${p.src}','${p.k}',${p.dn2})">
-        <img src="${p.src}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--r);border:1px solid var(--border)"/>
+      ${allPhotos.map(({p,k,dn2})=>{
+        const src=photoUrl(p);
+        // Encode p as JSON for the onclick — replace single quotes to avoid HTML attr breakage
+        const pJson=JSON.stringify(p).replace(/'/g,'&#39;');
+        return `
+      <div style="position:relative;cursor:pointer" onclick="showPhoto(${pJson},'${k}',${dn2})">
+        <img src="${src}" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--r);border:1px solid var(--border)" loading="lazy"/>
         <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));border-radius:0 0 var(--r) var(--r);padding:8px 10px">
-          <div style="font-size:11px;font-weight:900;color:var(--neon)">DAY ${p.dn2}</div>
-          <div style="font-size:9px;color:rgba(255,255,255,0.5)">${p.k}</div>
+          <div style="font-size:11px;font-weight:900;color:var(--neon)">DAY ${dn2}</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.5)">${k}</div>
         </div>
-      </div>`).join('')}
+      </div>`;}).join('')}
     </div>`}`;
 };
 
@@ -772,23 +776,127 @@ function addWaterM(ml){
   if(curPage==='today')render.today();
 }
 function resetWaterM(){const dd=td();dd.water=0;delete dd.tasks['water'];save();forceClose();render.today();}
-function handlePhoto(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const dd=td();dd.photos.push(ev.target.result);
-    if(!dd.tasks['photo'])dd.tasks['photo']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
-    save();showToast('Photo saved');
-    if(curPage==='today')render.today();else if(curPage==='photos')render.photos();
-  };
-  reader.readAsDataURL(file);e.target.value='';
+// ── Photo: resize + compress client-side, then upload to Supabase Storage ────
+
+// Resize to max 1200px wide, compress to JPEG @80% — keeps files ~150–250 KB
+function resizeAndCompress(file){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      const MAX=1200;
+      let w=img.naturalWidth,h=img.naturalHeight;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      canvas.toBlob(blob=>{
+        if(!blob)return reject(new Error('Canvas toBlob failed'));
+        // Return base64 string (without the data: prefix) and mime type
+        const reader=new FileReader();
+        reader.onload=ev=>{
+          const b64=ev.target.result.split(',')[1];
+          resolve({b64,mimeType:'image/jpeg',size:blob.size});
+        };
+        reader.readAsDataURL(blob);
+      },'image/jpeg',0.80);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Image load failed'));};
+    img.src=url;
+  });
 }
-function showPhoto(src,k,dn2){
+
+async function handlePhoto(e){
+  const file=e.target.files[0];if(!file)return;
+  e.target.value='';
+  const token=getToken();
+
+  // Show an in-progress toast so the user knows something is happening
+  showToast('Uploading photo…');
+
+  let compressed;
+  try{
+    compressed=await resizeAndCompress(file);
+  }catch(err){
+    console.error('[photo] compress failed:',err);
+    showToast('Photo error — try again');
+    return;
+  }
+
+  try{
+    const res=await fetch(`/api/photos?token=${token}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({date:today(),imageData:compressed.b64,mimeType:compressed.mimeType}),
+    });
+    if(!res.ok){
+      const err=await res.json().catch(()=>({}));
+      console.error('[photo] upload failed:',err);
+      showToast('Upload failed — saved locally');
+      // Fallback: store compressed base64 locally so the day isn't lost
+      _savePhotoLocally('data:image/jpeg;base64,'+compressed.b64);
+      return;
+    }
+    const {url,path}=await res.json();
+    const dd=td();
+    // Store as object {url, path} — path is needed for deletion later
+    dd.photos.push({url,path});
+    if(!dd.tasks['photo'])dd.tasks['photo']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+    save();
+    showToast('Photo saved ✓');
+  }catch{
+    // Offline fallback
+    showToast('Offline — saved locally');
+    _savePhotoLocally('data:image/jpeg;base64,'+compressed.b64);
+    return;
+  }
+
+  if(curPage==='today')render.today();
+  else if(curPage==='photos')render.photos();
+}
+
+// Fallback: store compressed base64 locally when upload fails
+function _savePhotoLocally(dataUrl){
+  const dd=td();
+  dd.photos.push({url:dataUrl,path:null});
+  if(!dd.tasks['photo'])dd.tasks['photo']=new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+  save();
+  if(curPage==='today')render.today();
+  else if(curPage==='photos')render.photos();
+}
+
+// Helper: given a photo entry (object or legacy bare string), return the display URL
+function photoUrl(p){return typeof p==='string'?p:p.url;}
+function showPhoto(p,k,dn2){
+  const src=photoUrl(p);
+  const canDelete=p&&p.path;
   openModal(`<div style="text-align:center">
     <div style="font-size:11px;font-weight:900;color:var(--neon);margin-bottom:8px;letter-spacing:1px">DAY ${dn2} · ${k}</div>
-    <img src="${src}" style="width:100%;border-radius:var(--r);max-height:65dvh;object-fit:contain"/>
-    <button class="btn btn-outline" style="margin-top:12px" onclick="forceClose()">Close</button>
+    <img src="${src}" style="width:100%;border-radius:var(--r);max-height:60dvh;object-fit:contain"/>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-outline" style="flex:1" onclick="forceClose()">Close</button>
+      ${canDelete?`<button class="btn btn-danger" style="flex:1" onclick="deletePhoto(${JSON.stringify(p)},${JSON.stringify(k)})"><i class="ti ti-trash"></i>Delete</button>`:''}
+    </div>
   </div>`);
+}
+
+async function deletePhoto(p,k){
+  if(!p||!p.path){
+    // Legacy local entry — just remove from array
+    const dd=S.days[k];if(!dd)return;
+    dd.photos=dd.photos.filter(x=>photoUrl(x)!==photoUrl(p));
+    save();forceClose();render.photos();return;
+  }
+  const token=getToken();
+  try{
+    await fetch(`/api/photos?token=${token}&path=${encodeURIComponent(p.path)}`,{method:'DELETE'});
+  }catch{/* offline — remove locally anyway */}
+  const dd=S.days[k];if(!dd)return;
+  dd.photos=dd.photos.filter(x=>x.path!==p.path);
+  // If no photos left today, unmark the task
+  if(dd.photos.length===0)delete dd.tasks['photo'];
+  save();forceClose();showToast('Photo deleted');render.photos();
 }
 function confirmReset(){
   openModal(`<div style="text-align:center;padding:8px">
